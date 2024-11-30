@@ -1,0 +1,11 @@
+# Secrets
+/.env
+
+# Sistem specific overrides to neo4j docker
+main/docker-compose.override.yml
+
+# Database logs
+main/neo4j_db/logs
+
+# Database data
+main/neo4j_db/data
