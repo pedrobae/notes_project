@@ -1,4 +1,17 @@
 services:
+  python:
+    container_name: python
+    image: python:latest
+    build: 
+      context: ./python
+    ports:
+      - 8888:8888
+    volumes: 
+      - ./python:/home
+    depends_on:
+      - neo4j
+    networks: 
+      - net
   neo4j:
     container_name: notes_project_neo4j
     image: neo4j:latest
@@ -16,3 +29,9 @@ services:
       - ./neo4j_db/logs:/logs
       - ./neo4j_db/import:/var/lib/neo4j/import
       - ./neo4j_db/plugins:/plugins
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
