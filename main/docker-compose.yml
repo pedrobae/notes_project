@@ -35,3 +35,10 @@ services:
 networks:
   net:
     driver: bridge
+
+volumes:
+  data:
+  logs:
+  import:
+  static:
+  templates:
