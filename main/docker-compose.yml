@@ -4,6 +4,8 @@ services:
     image: python:latest
     build: 
       context: ./python
+    environment:
+      - PYTHONUNBUFFERED=1
     ports:
       - 8888:8888
     volumes: 
@@ -12,6 +14,7 @@ services:
       - neo4j
     networks: 
       - net
+      
   neo4j:
     container_name: notes_project_neo4j
     image: neo4j:latest
