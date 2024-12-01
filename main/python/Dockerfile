@@ -4,7 +4,7 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/* \
     && echo "alias ll='ls -AFoqv --color --group-directories-first'" >> /root/.bashrc
 
-WORKDIR /vendas
+WORKDIR /home
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 EXPOSE 8000
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "0.0.0.0:8000"]
