@@ -1,10 +1,14 @@
 FROM python:3.10.12
 
-ADD requirements.txt /temp
-
-RUN python -m pip install -r /tmp/requirements.txt
-
+RUN apt-get update \
+	&& rm -rf /var/lib/apt/lists/* \
+    && echo "alias ll='ls -AFoqv --color --group-directories-first'" >> /root/.bashrc
 WORKDIR /home
+
+COPY requirements.txt ./
+RUN python -m pip install -r requirements.txt
+
+COPY . ./
 
 EXPOSE 8000
 CMD ["python", "0.0.0.0:8000"]
