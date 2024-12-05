@@ -26,7 +26,7 @@ class Connection():
 if __name__ == "__main__":
     load_dotenv()
     url = "neo4j://localhost:7687"
-    user_ = "neo4j"
+    user_ = os.environ.get("NEO4J_USER")
     password_ = os.environ.get("NEO4J_PASSWORD")
     con = Connection(url, user_, password_)
 
