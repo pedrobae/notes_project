@@ -35,7 +35,7 @@ class Connection():
             RETURN n
         """ % {"_nodeType": nodeType, "_name": name}
         result = tx.run(read_node)
-        return result.data("n")
+        return result.data("n")[0]["n"]
 
     def merge(self, name, nodeType, propertiesDict):
         for property, value in propertiesDict.items():
@@ -50,8 +50,8 @@ class Connection():
     
     def read_node(self, name, nodeType):
         with self._driver.session() as session:
-            result = session.execute_read(self.read_node_tx, name, nodeType)
-        return result
+            data = session.execute_read(self.read_node_tx, name, nodeType)
+        return data
     
 if __name__ == "__main__":
     load_dotenv()
@@ -67,5 +67,5 @@ if __name__ == "__main__":
 #    con.delete("Neza", "Character")
 
 #   Testing read
-    data = con.read_node("Neza", "Character")
-    print(data)
+#    data = con.read_node("Neza", "Character")
+#    print(data)
