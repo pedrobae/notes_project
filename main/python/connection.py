@@ -10,17 +10,19 @@ class Connection():
         self._driver.close()
 
     @staticmethod
-    def merge_node_tx(tx, name, nodeType):
+    def merge_node_tx(tx, name, nodeType, property, value):
         merge_node = """
             MERGE (n:%(_nodeType)s {name: "%(_name)s"})
+            SET n.%(_property)s = %(_value)s
             RETURN n.name AS name
-        """ % {"_nodeType": nodeType, "_name": name}
+        """ % {"_nodeType": nodeType, "_name": name, "_property": property, "_value": value}
         result = tx.run(merge_node)
         return result.single()["name"]
 
-    def create(self, name, nodeType):
-        with self._driver.session() as session:
-            result = session.execute_write(self.merge_node_tx, name, nodeType)
+    def merge(self, name, nodeType, propertiesDict):
+        for property, value in propertiesDict.items():
+            with self._driver.session() as session:
+                result = session.execute_write(self.merge_node_tx, name, nodeType, property, value)
         return result
     
 if __name__ == "__main__":
@@ -31,4 +33,4 @@ if __name__ == "__main__":
     con = Connection(url, user_, password_)
 
 #   Testing connection and node creation
-    con.create("Neza", "Character")
+    con.merge("Neza", "Character", {"name": "Neza", "age": 45})
