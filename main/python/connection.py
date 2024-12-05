@@ -28,13 +28,14 @@ class Connection():
         result = tx.run(delete_node)
         return result
     
+    @staticmethod
     def read_node_tx(tx, name, nodeType):
         read_node = """
             MATCH (n:%(_nodeType)s {name: "%(_name)s"})
             RETURN n
         """ % {"_nodeType": nodeType, "_name": name}
         result = tx.run(read_node)
-        return result
+        return result.data("n")
 
     def merge(self, name, nodeType, propertiesDict):
         for property, value in propertiesDict.items():
@@ -47,6 +48,11 @@ class Connection():
             result = session.execute_write(self.delete_node_tx, name, nodeType)
         return result
     
+    def read_node(self, name, nodeType):
+        with self._driver.session() as session:
+            result = session.execute_read(self.read_node_tx, name, nodeType)
+        return result
+    
 if __name__ == "__main__":
     load_dotenv()
     url = "neo4j://localhost:7687"
@@ -55,7 +61,11 @@ if __name__ == "__main__":
     con = Connection(url, user_, password_)
 
 #   Testing node merger
-    con.merge("Neza", "Character", {"birthYear": "10.000 B.C", "birthPlace": "Ardent Copper Empire"})
+#    con.merge("Neza", "Character", {"birthYear": "10.000 B.C", "birthPlace": "Ardent Copper Empire"})
 
 #   Testing deletion
 #    con.delete("Neza", "Character")
+
+#   Testing read
+    data = con.read_node("Neza", "Character")
+    print(data)
