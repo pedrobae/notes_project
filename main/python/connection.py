@@ -40,13 +40,13 @@ class Connection():
     @staticmethod
     def merge_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2, edgeType, property, value):
         merge_edge = """
-            MERGE (:%(_nodeType_1)s {name: "%(_name_1)s"}) -
-            [e:%(_edgeType)s] ->
-            (:%(_nodeType_2)s {name: "%(_name_2)s"})
+            MERGE (n1:%(_nodeType_1)s {name: "%(_name_1)s"})
+            MERGE (n2:%(_nodeType_2)s {name: "%(_name_2)s"})
+            MERGE (n1)-[e:%(_edgeType)s]-(n2)
             SET e.%(_property)s = "%(_value)s"
             RETURN e
         """ % {"_nodeType_1": nodeType_1, "_name_1": name_1, "_edgeType": edgeType,
-               "_nodeType_2": nodeType_2, "_name_1": name_2, "_property": property, "_value": value}
+               "_nodeType_2": nodeType_2, "_name_2": name_2, "_property": property, "_value": value}
         result = tx.run(merge_edge)
         return result
 
@@ -82,7 +82,8 @@ if __name__ == "__main__":
     con = Connection(url, user_, password_)
 
 #   Testing node merger
-#    con.merge("Neza", "Character", {"birthYear": "10.000 B.C", "birthPlace": "Ardent Copper Empire"})
+    con.merge("Neza", "Character", {"birthYear": "10.000 B.C", "birthPlace": "Ardent Copper Empire"})
+    con.merge("Gelboss", "Character", {"shard": "Autonomy", "summary": "One of the ten genesis shards"})
 
 #   Testing deletion
 #    con.delete("Neza", "Character")
@@ -90,3 +91,6 @@ if __name__ == "__main__":
 #   Testing read
 #    data = con.read_node("Neza", "Character")
 #    print(data)
+
+#   Testing edge merger
+    con.merge_edge("Neza", "Character", "Gelboss", "Character", "enemies", {"summary" : "Gelboss rescued Neza from the Empire, throughout the ages their differences proved fatal", "start": "9950 A.C"})
