@@ -11,11 +11,11 @@ class Connection():
 
     @staticmethod
     def merge_node_tx(tx, name, nodeType):
-        create_node = """
+        merge_node = """
             MERGE (n:%(_nodeType)s {name: "%(_name)s"})
             RETURN n.name AS name
         """ % {"_nodeType": nodeType, "_name": name}
-        result = tx.run(create_node)
+        result = tx.run(merge_node)
         return result.single()["name"]
 
     def create(self, name, nodeType):
