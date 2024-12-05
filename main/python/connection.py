@@ -36,6 +36,19 @@ class Connection():
         """ % {"_nodeType": nodeType, "_name": name}
         result = tx.run(read_node)
         return result.data("n")[0]["n"]
+    
+    @staticmethod
+    def merge_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2, edgeType, property, value):
+        merge_edge = """
+            MERGE (:%(_nodeType_1)s {name: "%(_name_1)s"}) -
+            [e:%(_edgeType)s] ->
+            (:%(_nodeType_2)s {name: "%(_name_2)s"})
+            SET e.%(_property)s = "%(_value)s"
+            RETURN e
+        """ % {"_nodeType_1": nodeType_1, "_name_1": name_1, "_edgeType": edgeType,
+               "_nodeType_2": nodeType_2, "_name_1": name_2, "_property": property, "_value": value}
+        result = tx.run(merge_edge)
+        return result
 
     def merge(self, name, nodeType, propertiesDict):
         for property, value in propertiesDict.items():
@@ -52,6 +65,14 @@ class Connection():
         with self._driver.session() as session:
             data = session.execute_read(self.read_node_tx, name, nodeType)
         return data
+    
+    def merge_edge(self, name_1, nodeType_1, name_2, nodeType_2, edgeType, propertiesDict):
+        for property, value in propertiesDict.items():
+            with self._driver.session() as session:
+                result = session.execute_write(
+                    self.merge_edge_tx, name_1, nodeType_1, name_2, nodeType_2, edgeType, property, value
+                    )
+        return result
     
 if __name__ == "__main__":
     load_dotenv()
