@@ -10,12 +10,12 @@ class Connection():
         self._driver.close()
 
     @staticmethod
-    def merge_node_tx(tx, name, nodeType, attribute, value):
+    def merge_node_tx(tx, name, nodeType, property, value):
         merge_node = """
             MERGE (n:%(_nodeType)s {name: "%(_name)s"})
-            SET n.%(_attribute)s = "%(_value)s"
+            SET n.%(_property)s = "%(_value)s"
             RETURN n.name AS name
-        """ % {"_nodeType": nodeType, "_name": name, "_attribute": attribute, "_value": value}
+        """ % {"_nodeType": nodeType, "_name": name, "_property": property, "_value": value}
         result = tx.run(merge_node)
         return result.single()["name"]
     
@@ -23,15 +23,23 @@ class Connection():
     def delete_node_tx(tx, name, nodeType):
         delete_node = """
             MATCH (n:%(_nodeType)s {name: "%(_name)s"})
-            DELETE n
+            DETACH DELETE n
         """ % {"_nodeType": nodeType, "_name": name}
         result = tx.run(delete_node)
         return result
+    
+    def read_node_tx(tx, name, nodeType):
+        read_node = """
+            MATCH (n:%(_nodeType)s {name: "%(_name)s"})
+            RETURN n
+        """ % {"_nodeType": nodeType, "_name": name}
+        result = tx.run(read_node)
+        return result
 
-    def merge(self, name, nodeType, attributesDict):
-        for attribute, value in attributesDict.items():
+    def merge(self, name, nodeType, propertiesDict):
+        for property, value in propertiesDict.items():
             with self._driver.session() as session:
-                result = session.execute_write(self.merge_node_tx, name, nodeType, attribute, value)
+                result = session.execute_write(self.merge_node_tx, name, nodeType, property, value)
         return result
     
     def delete(self, name, nodeType):
@@ -46,7 +54,8 @@ if __name__ == "__main__":
     password_ = os.environ.get("NEO4J_PASSWORD")
     con = Connection(url, user_, password_)
 
-#   Testing connection and node merger
-#    con.merge("Neza", "Character", {"birthYear": "10.000 A.C", "birthPlace": "Imperio Cobre Ardente"})
+#   Testing node merger
+    con.merge("Neza", "Character", {"birthYear": "10.000 B.C", "birthPlace": "Ardent Copper Empire"})
 
-    con.delete("Neza", "Character")
+#   Testing deletion
+#    con.delete("Neza", "Character")
