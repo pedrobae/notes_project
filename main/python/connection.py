@@ -13,7 +13,7 @@ class Connection():
     def merge_node_tx(tx, name, nodeType, property, value):
         merge_node = """
             MERGE (n:%(_nodeType)s {name: "%(_name)s"})
-            SET n.%(_property)s = %(_value)s
+            SET n.%(_property)s = "%(_value)s"
             RETURN n.name AS name
         """ % {"_nodeType": nodeType, "_name": name, "_property": property, "_value": value}
         result = tx.run(merge_node)
@@ -32,5 +32,5 @@ if __name__ == "__main__":
     password_ = os.environ.get("NEO4J_PASSWORD")
     con = Connection(url, user_, password_)
 
-#   Testing connection and node creation
-    con.merge("Neza", "Character", {"name": "Neza", "age": 45})
+#   Testing connection and node merger
+    con.merge("Neza", "Character", {"shard": "life"})
