@@ -31,8 +31,8 @@ class Connection():
     @staticmethod
     def read_node_tx(tx, name, nodeType):
         read_node = """
-            MATCH (n:%(_nodeType)s {name: "%(_name)s"})
-            RETURN n
+            MATCH (n:%(_nodeType)s {name: "%(_name)s"})-[e]-(n2)
+            RETURN n, e.type AS edge, n2.name AS name_2
         """ % {"_nodeType": nodeType, "_name": name}
         result = tx.run(read_node)
         return result.data("n")[0]["n"]
@@ -48,14 +48,14 @@ class Connection():
         return result.data()
     
     @staticmethod
-    def merge_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2, edgeType, property, value):
+    def merge_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2, property, value):
         merge_edge = """
             MERGE (n1:%(_nodeType_1)s {name: "%(_name_1)s"})
             MERGE (n2:%(_nodeType_2)s {name: "%(_name_2)s"})
-            MERGE (n1)-[e:%(_edgeType)s]-(n2)
+            MERGE (n1)-[e:Edge]-(n2)
             SET e.%(_property)s = "%(_value)s"
             RETURN e
-        """ % {"_nodeType_1": nodeType_1, "_name_1": name_1, "_edgeType": edgeType,
+        """ % {"_nodeType_1": nodeType_1, "_name_1": name_1,
                "_nodeType_2": nodeType_2, "_name_2": name_2, "_property": property, "_value": value}
         result = tx.run(merge_edge)
         return result
@@ -87,11 +87,11 @@ class Connection():
     
 #   Create and update an edge and its properties, the nodes can be created with no properties through this method
 #   Use a property type instead of label to discriminate the edges, because it can be modified with this method
-    def merge_edge(self, name_1, nodeType_1, name_2, nodeType_2, edgeType, propertiesDict):
+    def merge_edge(self, name_1, nodeType_1, name_2, nodeType_2, propertiesDict):
         for property, value in propertiesDict.items():
             with self._driver.session() as session:
                 result = session.execute_write(
-                    self.merge_edge_tx, name_1, nodeType_1, name_2, nodeType_2, edgeType, property, value
+                    self.merge_edge_tx, name_1, nodeType_1, name_2, nodeType_2, property, value
                     )
         return result
     
@@ -118,4 +118,5 @@ if __name__ == "__main__":
 #    print(data)
 
 #   Testing edge merger
-#    con.merge_edge("Neza", "Character", "Death", "Character", "Patron", {"summary" : "Neza proposed a bargain to become the Herald of Death in exchange for seeing her lost daughter"})
+#    con.merge_edge("Gelboss", "Character", "Neza", "Character", {"type": "Passion"})
+#    con.merge_edge("Neza", "Character", "Death", "Character", {"type":"Herald", "summary" : "Neza proposed a bargain to become the Herald of Death in exchange for seeing her lost daughter"})
