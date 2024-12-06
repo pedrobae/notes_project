@@ -32,13 +32,13 @@ class Connection():
     def read_node_tx(tx, name, nodeType):
         read_node = """
             MATCH (n:%(_nodeType)s {name: "%(_name)s"})-[e]-(n2)
-            RETURN n, e.type AS edge, n2.name AS name
+            RETURN n as node, properties(e) AS edge, n2.name AS name
         """ % {"_nodeType": nodeType, "_name": name}
         data = tx.run(read_node).data()
-        node = data[0]["n"]
+        node = data[0]["node"]
         edge = []
         for dict in data:
-            dict.pop("n")
+            dict.pop("node")
             edge.append(dict)
         return node, edge
         
@@ -117,8 +117,6 @@ if __name__ == "__main__":
 
 #   Testing read
 #    node, edge = con.read_node("Neza", "Character")
-#    print(node)
-#    print(edge)
 
 #   Testing search
 #    data = con.search_node("e")
