@@ -4,11 +4,11 @@
 # Sistem specific overrides to neo4j docker
 main/docker-compose.override.yml
 
-# Database logs
+# Database logs and data
 main/neo4j_db/logs
-
-# Database data
 main/neo4j_db/data
 
-# Cache
+# Python Cache
 main/python/__pycache__
+# Python Connection test
+main/python/connection_test.py
