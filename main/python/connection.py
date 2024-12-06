@@ -32,10 +32,16 @@ class Connection():
     def read_node_tx(tx, name, nodeType):
         read_node = """
             MATCH (n:%(_nodeType)s {name: "%(_name)s"})-[e]-(n2)
-            RETURN n, e.type AS edge, n2.name AS name_2
+            RETURN n, e.type AS edge, n2.name AS name
         """ % {"_nodeType": nodeType, "_name": name}
-        result = tx.run(read_node)
-        return result.data("n")[0]["n"]
+        data = tx.run(read_node).data()
+        node = data[0]["n"]
+        edge = []
+        for dict in data:
+            dict.pop("n")
+            edge.append(dict)
+        return node, edge
+        
 
     @staticmethod
     def search_node_tx(tx, search):
@@ -73,11 +79,11 @@ class Connection():
             result = session.execute_write(self.delete_node_tx, name, nodeType)
         return result
     
-#   Read the properties of a node, used to view the active node
+#   Read the properties of a node and its edges, used to view the active node
     def read_node(self, name, nodeType):
         with self._driver.session() as session:
-            data = session.execute_read(self.read_node_tx, name, nodeType)
-        return data
+            node, edge = session.execute_read(self.read_node_tx, name, nodeType)
+        return node, edge
     
 #   Search a node based on name, used on the search bar to find a node to activate
     def search_node(self, search):
@@ -110,8 +116,9 @@ if __name__ == "__main__":
 #    con.delete("Neza", "Character")
 
 #   Testing read
-#    data = con.read_node("Neza", "Character")
-#    print(data)
+#    node, edge = con.read_node("Neza", "Character")
+#    print(node)
+#    print(edge)
 
 #   Testing search
 #    data = con.search_node("e")
