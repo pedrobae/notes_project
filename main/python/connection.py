@@ -60,27 +60,33 @@ class Connection():
         result = tx.run(merge_edge)
         return result
 
+#   Create and update a node and its properties, the node is chosen by name and nodeType
     def merge(self, name, nodeType, propertiesDict):
         for property, value in propertiesDict.items():
             with self._driver.session() as session:
                 result = session.execute_write(self.merge_node_tx, name, nodeType, property, value)
         return result
-    
+
+#   Delete a node and its edges, the node is chosen by name and nodeType (barely used)
     def delete(self, name, nodeType):
         with self._driver.session() as session:
             result = session.execute_write(self.delete_node_tx, name, nodeType)
         return result
     
+#   Read the properties of a node, used to view the active node
     def read_node(self, name, nodeType):
         with self._driver.session() as session:
             data = session.execute_read(self.read_node_tx, name, nodeType)
         return data
     
+#   Search a node based on name, used on the search bar to find a node to activate
     def search_node(self, search):
         with self._driver.session() as session:
             data = session.execute_read(self.search_node_tx, search)
         return data
     
+#   Create and update an edge and its properties, the nodes can be created with no properties through this method
+#   Use a property type instead of label to discriminate the edges, because it can be modified with this method
     def merge_edge(self, name_1, nodeType_1, name_2, nodeType_2, edgeType, propertiesDict):
         for property, value in propertiesDict.items():
             with self._driver.session() as session:
@@ -108,8 +114,8 @@ if __name__ == "__main__":
 #    print(data)
 
 #   Testing search
-    data = con.search_node("e")
-    print(data)
+#    data = con.search_node("e")
+#    print(data)
 
 #   Testing edge merger
-#    con.merge_edge("Neza", "Character", "Gelboss", "Character", "enemies", {"summary" : "Gelboss rescued Neza from the Empire, throughout the ages their differences proved fatal", "start": "9950 A.C"})
+#    con.merge_edge("Neza", "Character", "Death", "Character", "Patron", {"summary" : "Neza proposed a bargain to become the Herald of Death in exchange for seeing her lost daughter"})
