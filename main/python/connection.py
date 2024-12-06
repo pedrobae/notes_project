@@ -8,7 +8,7 @@ class Connection():
         self._driver.close()
 
     @staticmethod
-    def merge_node_tx(tx, name, nodeType, property, value):
+    def __merge_node_tx(tx, name, nodeType, property, value):
         merge_node = """
             MERGE (n:%(_nodeType)s {name: "%(_name)s"})
             SET n.%(_property)s = "%(_value)s"
@@ -18,7 +18,7 @@ class Connection():
         return result.single()["name"]
     
     @staticmethod
-    def delete_node_tx(tx, name, nodeType):
+    def __delete_node_tx(tx, name, nodeType):
         delete_node = """
             MATCH (n:%(_nodeType)s {name: "%(_name)s"})
             DETACH DELETE n
@@ -27,7 +27,7 @@ class Connection():
         return result
     
     @staticmethod
-    def read_tx(tx, name, nodeType):
+    def __read_tx(tx, name, nodeType):
         read = """
             MATCH (n:%(_nodeType)s {name: "%(_name)s"})-[e]-(n2)
             RETURN n as node, properties(e) AS edge, n2.name AS name
@@ -42,17 +42,17 @@ class Connection():
         
 
     @staticmethod
-    def search_node_tx(tx, search):
+    def __search_node_tx(tx, search):
         search_node = """
             MATCH (n)
             WHERE n.name =~ '(?i).*%(_search)s.*'
-            RETURN n.name AS name
+            RETURN labels(n) AS label, n.name AS name
         """ % {"_search": search}
         result = tx.run(search_node)
         return result.data()
     
     @staticmethod
-    def merge_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2, property, value):
+    def __merge_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2, property, value):
         merge_edge = """
             MERGE (n1:%(_nodeType_1)s {name: "%(_name_1)s"})
             MERGE (n2:%(_nodeType_2)s {name: "%(_name_2)s"})
@@ -68,25 +68,25 @@ class Connection():
     def merge(self, name, nodeType, propertiesDict):
         for property, value in propertiesDict.items():
             with self._driver.session() as session:
-                result = session.execute_write(self.merge_node_tx, name, nodeType, property, value)
+                result = session.execute_write(self.__merge_node_tx, name, nodeType, property, value)
         return result
 
 #   Delete a node and its edges, the node is chosen by name and nodeType (barely used)
     def delete(self, name, nodeType):
         with self._driver.session() as session:
-            result = session.execute_write(self.delete_node_tx, name, nodeType)
+            result = session.execute_write(self.__delete_node_tx, name, nodeType)
         return result
     
 #   Read the properties of a node and its edges, used to view the active node
     def read(self, name, nodeType):
         with self._driver.session() as session:
-            data = session.execute_read(self.read_tx, name, nodeType)
+            data = session.execute_read(self.__read_tx, name, nodeType)
         return data
     
 #   Search a node based on name, used on the search bar to find a node to activate
     def search_node(self, search):
         with self._driver.session() as session:
-            data = session.execute_read(self.search_node_tx, search)
+            data = session.execute_read(self.__search_node_tx, search)
         return data
     
 #   Create and update an edge and its properties, the nodes can be created with no properties through this method
@@ -95,6 +95,6 @@ class Connection():
         for property, value in propertiesDict.items():
             with self._driver.session() as session:
                 result = session.execute_write(
-                    self.merge_edge_tx, name_1, nodeType_1, name_2, nodeType_2, property, value
+                    self.__merge_edge_tx, name_1, nodeType_1, name_2, nodeType_2, property, value
                     )
         return result
