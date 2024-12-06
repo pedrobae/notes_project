@@ -36,6 +36,16 @@ class Connection():
         """ % {"_nodeType": nodeType, "_name": name}
         result = tx.run(read_node)
         return result.data("n")[0]["n"]
+
+    @staticmethod
+    def search_node_tx(tx, search):
+        search_node = """
+            MATCH (n)
+            WHERE n.name =~ '(?i).*%(_search)s.*'
+            RETURN n.name AS name
+        """ % {"_search": search}
+        result = tx.run(search_node)
+        return result.data()
     
     @staticmethod
     def merge_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2, edgeType, property, value):
@@ -66,6 +76,11 @@ class Connection():
             data = session.execute_read(self.read_node_tx, name, nodeType)
         return data
     
+    def search_node(self, search):
+        with self._driver.session() as session:
+            data = session.execute_read(self.search_node_tx, search)
+        return data
+    
     def merge_edge(self, name_1, nodeType_1, name_2, nodeType_2, edgeType, propertiesDict):
         for property, value in propertiesDict.items():
             with self._driver.session() as session:
@@ -82,8 +97,8 @@ if __name__ == "__main__":
     con = Connection(url, user_, password_)
 
 #   Testing node merger
-    con.merge("Neza", "Character", {"birthYear": "10.000 B.C", "birthPlace": "Ardent Copper Empire"})
-    con.merge("Gelboss", "Character", {"shard": "Autonomy", "summary": "One of the ten genesis shards"})
+#    con.merge("Neza", "Character", {"birthYear": "10.000 B.C", "birthPlace": "Ardent Copper Empire"})
+#    con.merge("Gelboss", "Character", {"shard": "Autonomy", "summary": "One of the ten genesis shards"})
 
 #   Testing deletion
 #    con.delete("Neza", "Character")
@@ -92,5 +107,9 @@ if __name__ == "__main__":
 #    data = con.read_node("Neza", "Character")
 #    print(data)
 
+#   Testing search
+    data = con.search_node("e")
+    print(data)
+
 #   Testing edge merger
-    con.merge_edge("Neza", "Character", "Gelboss", "Character", "enemies", {"summary" : "Gelboss rescued Neza from the Empire, throughout the ages their differences proved fatal", "start": "9950 A.C"})
+#    con.merge_edge("Neza", "Character", "Gelboss", "Character", "enemies", {"summary" : "Gelboss rescued Neza from the Empire, throughout the ages their differences proved fatal", "start": "9950 A.C"})
