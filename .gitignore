@@ -9,3 +9,6 @@ main/neo4j_db/logs
 
 # Database data
 main/neo4j_db/data
+
+# Cache
+main/python/__pycache__
