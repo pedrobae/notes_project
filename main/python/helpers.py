@@ -6,14 +6,21 @@ class Node():
         self.properties = {}
         self.edges = []
 
-    def setNode(self, name, label):
+    def setNode(self, name):
         if self.name:
             self.saveNode()
 
         self.name = name
+        node, label, _edges = self.con.read(name)
         self.label = label
-        node, edges = self.con.read(name, label)
         self.properties = node
+        edges = []
+        for edge in _edges:
+            edges.append({
+                "properties": edge["properties"],
+                "name": edge["edgeNode"],
+                "label": edge["nodeLabel"]
+            })
         self.edges = edges
 
     def updateNode(self, properties):
