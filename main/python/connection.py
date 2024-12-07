@@ -27,18 +27,19 @@ class Connection():
         return result
     
     @staticmethod
-    def __read_tx(tx, name, nodeType):
+    def __read_tx(tx, name):
         read = """
-            MATCH (n:%(_nodeType)s {name: "%(_name)s"})-[e]-(n2)
-            RETURN n as node, properties(e) AS properties, n2.name AS node, labels(n2) AS label
-        """ % {"_nodeType": nodeType, "_name": name}
+            MATCH (n {name: "%(_name)s"})-[e]-(n2)
+            RETURN n as node, labels(n) as label, properties(e) AS properties, n2.name AS edgeNode, labels(n2) AS nodeLabel
+        """ % {"_name": name}
         data = tx.run(read).data()
         node = data[0]["node"]
+        label = data[0]["label"]
         edge = []
         for dict in data:
             dict.pop("node")
             edge.append(dict)
-        return node, edge
+        return node, label, edge
         
 
     @staticmethod
@@ -78,9 +79,9 @@ class Connection():
         return result
     
 #   Read the properties of a node and its edges, used to view the active node
-    def read(self, name, nodeType):
+    def read(self, name):
         with self._driver.session() as session:
-            data = session.execute_read(self.__read_tx, name, nodeType)
+            data = session.execute_read(self.__read_tx, name)
         return data
     
 #   Search a node based on name, used on the search bar to find a node to activate
