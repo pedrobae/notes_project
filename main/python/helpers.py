@@ -41,6 +41,14 @@ class Node():
         self.con.delete(self.name, self.label)
         self.name = None
 
+    def getData(self):
+        return {
+            "name": self.name,
+            "label": self.label,
+            "properties": self.properties,
+            "edges": self.properties
+        }
+
     def saveNode(self):
         self.mergeNode()
         self.mergeEdge()

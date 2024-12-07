@@ -32,6 +32,5 @@ def autocomplete():
 @app.route("/activateNode", methods=["GET", "POST"])
 def activateNode():
     name = request.form.get("searchNode")
-
     activeNode.setNode(name)
-    
+    return render_template("index.html", activeNode = activeNode.getData())
