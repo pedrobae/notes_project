@@ -5,6 +5,9 @@ from flask import Flask, flash, redirect, render_template, request, session
 
 from helpers import Node
 
+from connection import Connection
+
+
 app = Flask(__name__)
 
 load_dotenv()

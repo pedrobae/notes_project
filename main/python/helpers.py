@@ -1,5 +1,3 @@
-from connection import Connection
-
 class Node():
     def __init__(self, con):
         self.con = con
