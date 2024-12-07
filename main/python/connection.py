@@ -30,7 +30,7 @@ class Connection():
     def __read_tx(tx, name, nodeType):
         read = """
             MATCH (n:%(_nodeType)s {name: "%(_name)s"})-[e]-(n2)
-            RETURN n as node, properties(e) AS edge, n2.name AS name
+            RETURN n as node, properties(e) AS properties, n2.name AS node, labels(n2) AS label
         """ % {"_nodeType": nodeType, "_name": name}
         data = tx.run(read).data()
         node = data[0]["node"]
