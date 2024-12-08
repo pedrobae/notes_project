@@ -48,8 +48,10 @@
                     <tr>
                         <td><input type="text" id="property_{{i}}" name="property_{{i}}" autocomplete="off" value="{{ activeNode.properties[i][0] }}"></td>
                         <td><input type="textarea" id="property_{{i}}_value" name="property_{{i}}_value" autocomplete="off" value="{{ activeNode.properties[i][1] }}"></td>
-                    </tr>
                 {% endfor %}
+                        <td><input type="text" id="new_property" name="new_property" autocomplete="off" value="Property"></td>
+                        <td><input type="textarea" id="new_property_value" name="new_property_value" autocomplete="off" value="Value"></td>
+                    </tr>
                 <h5>Edges</h5>
                 {% for i in range(activeNode.edges|length) %}
                     <input type="text" id="edgeType" name="edgeType" autocomplete="off" value="{{ activeNode.edges[i].edgeType }}">
@@ -63,6 +65,7 @@
                         </tr>
                     {% endfor %}
                 {% endfor %}
+                <input type="button" id="submit" name="submit" value="Save" class="bottomRight">
             </div>
         </div>
     </body>

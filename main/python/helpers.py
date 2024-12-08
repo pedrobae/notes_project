@@ -1,13 +1,13 @@
 class Node():
     def __init__(self, con):
         self.con = con
-        self.name = None
-        self.label = None
+        self.name = "Name"
+        self.label = "Label"
         self.properties = {}
         self.edges = []
 
     def setNode(self, name):
-        if self.name:
+        if self.name != "Name":
             self.saveNode()
 
         self.name = name
