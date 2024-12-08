@@ -12,14 +12,14 @@ class Node():
 
         self.name = name
         node, label, _edges = self.con.read(name)
-        self.label = label
+        self.label = label[0]
         self.properties = node
         edges = []
         for edge in _edges:
             edges.append({
                 "properties": edge["properties"],
                 "name": edge["edgeNode"],
-                "label": edge["nodeLabel"]
+                "label": edge["nodeLabel"][0]
             })
         self.edges = edges
 
@@ -35,7 +35,7 @@ class Node():
 
     def mergeEdge(self):
         for edge in self.edges:
-            self.con.merge_edge(self.name, self.label, edge["node"], edge["label"], edge["properties"])
+            self.con.merge_edge(self.name, self.label, edge["name"], edge["label"], edge["properties"])
     
     def deleteNode(self):
         self.con.delete(self.name, self.label)
