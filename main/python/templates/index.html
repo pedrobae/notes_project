@@ -40,12 +40,28 @@
             </div>
 
             <div class="right side no-gutters">
-                <input type="text" id="name" name="name" autocomplete="off" value={{ activeNode.name }}>
-                <input type="text" id="label" name="label" autocomplete="off" value={{ activeNode.label }}>
+                <h5>Node</h5>
+                <input type="text" id="label" name="label" autocomplete="off" value="{{ activeNode.label }}">
+                <input type="textarea" id="name" name="name" autocomplete="off" value="{{ activeNode.name }}">
+                <h5>Properties</h5>
                 {% for i in range(activeNode.properties|length) %}
                     <tr>
-                        <td><input type="text" id="property.{{i}}" name="property.{{i}}" autocomplete="off" value={{ activeNode.properties[i][0] }}></td>
+                        <td><input type="text" id="property_{{i}}" name="property_{{i}}" autocomplete="off" value="{{ activeNode.properties[i][0] }}"></td>
+                        <td><input type="textarea" id="property_{{i}}_value" name="property_{{i}}_value" autocomplete="off" value="{{ activeNode.properties[i][1] }}"></td>
                     </tr>
+                {% endfor %}
+                <h5>Edges</h5>
+                {% for i in range(activeNode.edges|length) %}
+                    <input type="text" id="edgeType" name="edgeType" autocomplete="off" value="{{ activeNode.edges[i].edgeType }}">
+                    <input type="text" id="edgeNode" name="edgeNode" autocomplete="off" value="{{ activeNode.edges[i].name }}">
+                    <input type="text" id="edgeNodeLabel" name="edgeNodeLabel" autocomplete="off" value="{{ activeNode.edges[i].label }}">
+                    <h7>Edge Properties</h7>
+                    {% for j in range(activeNode.edges.properties|length) %}
+                        <tr>
+                            <td><input type="text" id="edgeProperty_{{j}}" name="property_{{j}}" autocomplete="off" value="{{ activeNode.edges[i].properties[j][0] }}"></td>
+                            <td><input type="textarea" id="edgeProperty_{{j}}_value" name="property_{{j}}_value" autocomplete="off" value="{{ activeNode.edges[i].properties[j][1] }}"></td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
             </div>
         </div>

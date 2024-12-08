@@ -45,13 +45,28 @@ class Node():
         # Changing the structure of properties to suit the jinja in index.html
         properties_list = []
         for property, value in self.properties.items():
-            properties_list.append([property, value])
+            if property != "name":
+                properties_list.append([property, value])
+
+        edges_list = []
+        for edge in self.edges:
+            edge_properties_list = []
+            for property, value in edge["properties"].items():
+                if property != "type":
+                    edge_properties_list.append([property, value])
+            treated_edge = {
+                "edgeType": edge["properties"]["type"],
+                "properties": edge_properties_list,
+                "name": edge["name"],
+                "label": edge["label"]
+            }
+            edges_list.append(treated_edge)
 
         return {
             "name": self.name,
             "label": self.label,
             "properties": properties_list,
-            "edges": self.edges
+            "edges": edges_list
         }
 
     def saveNode(self):
