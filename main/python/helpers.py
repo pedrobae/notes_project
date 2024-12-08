@@ -42,11 +42,16 @@ class Node():
         self.name = None
 
     def getData(self):
+        # Changing the structure of properties to suit the jinja in index.html
+        properties_list = []
+        for property, value in self.properties.items():
+            properties_list.append([property, value])
+
         return {
             "name": self.name,
             "label": self.label,
-            "properties": self.properties,
-            "edges": self.properties
+            "properties": properties_list,
+            "edges": self.edges
         }
 
     def saveNode(self):

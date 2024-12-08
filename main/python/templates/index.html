@@ -40,7 +40,13 @@
             </div>
 
             <div class="right side no-gutters">
-                
+                <input type="text" id="name" name="name" autocomplete="off" value={{ activeNode.name }}>
+                <input type="text" id="label" name="label" autocomplete="off" value={{ activeNode.label }}>
+                {% for i in range(activeNode.properties|length) %}
+                    <tr>
+                        <td><input type="text" id="property.{{i}}" name="property.{{i}}" autocomplete="off" value={{ activeNode.properties[i][0] }}></td>
+                    </tr>
+                {% endfor %}
             </div>
         </div>
     </body>

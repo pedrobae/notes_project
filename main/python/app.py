@@ -29,16 +29,15 @@ def autocomplete():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html")
+    data = activeNode.getData()
+    return render_template("index.html", activeNode = data)
 
 
 @app.route("/setNode", methods=["POST"])
 def setNode():
     data = None
     if request.method == "POST":
-        print("Called /activate POST")
         name = request.form.get("search")
-        print("\n\n\n",name)
         activeNode.setNode(name)
         data = activeNode.getData()
         print(data)
