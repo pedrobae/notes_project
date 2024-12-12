@@ -1,19 +1,19 @@
 .side {
-    height: 100%;
     position: fixed;
+    height: 100%;
     z-index: 1;
     top: 0;
     overflow-x: hidden;
 }
 
 .left {
-    width: 70%;
+    width: 65%;
     left: 0;
     background: #d9bda5;
 }
 
 .right {
-    width: 30%;
+    width: 35%;
     right: 0;
     background: #e5cbba;
 }
@@ -24,16 +24,25 @@
     bottom: 0;
 }
 
-.inputLeft {
+.textFormLeft {
     z-index: 1;
+    
     overflow-x: hidden;
-    width: 40%;
-    left: 0;
 }
 
-.inputRight {
+.textFormRight {
+    z-index: 1;
+    align-content: end;
+    overflow-x: hidden;
+}
+
+.halves {
+    width: 50%
+}
+
+.Indented {
+    width: 90%;
+    ali: 0;
     z-index: 1;
     overflow-x: hidden;
-    width: 60%;
-    right: 0;
 }
