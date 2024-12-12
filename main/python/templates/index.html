@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="en">
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-        
-        <link href="//code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet"></link>
+        <link href="//code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
         <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
-        <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js" ></script>
-
+        <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
         <link href="/static/styles.css" rel="stylesheet">
         <title>Home</title>
 
@@ -16,15 +13,15 @@
             $(function() {
                 $("#searchNode").autocomplete({
                     source:function(request, response) {
-                        $.getJSON("{{url_for('autocomplete')}}",{
-                            q: request.term, // in flask, "q" will be the argument to look for using request.args
+                        $.getJSON("{{url_for('autocomplete')}}", {
+                            q: request.term,
                         }, function(data) {
-                            response(data.matching_results); // matching_results from jsonify
+                            response(data.matching_results);
                         });
                     },
                     minLength: 2,
                     select: function(event, ui) {
-                        console.log(ui.item.value); // not in your question, but might help later
+                        console.log(ui.item.value); 
                     }
                 });
             })
@@ -34,7 +31,7 @@
     <body>
         <div class="row no-gutters">
             <div class="left side no-gutters">
-                <form action="{{url_for('setNode')}}" method="post">
+                <form action="{{ url_for('setNode') }}" method="post">
                     <input type="text" id="searchNode" name="search" autocomplete="off">
                 </form>
             </div>
@@ -42,30 +39,60 @@
             <div class="right side no-gutters">
                 <h5>Node</h5>
                 <input type="text" id="label" name="label" autocomplete="off" value="{{ activeNode.label }}">
-                <input type="textarea" id="name" name="name" autocomplete="off" value="{{ activeNode.name }}">
-                <h5>Properties</h5>
-                {% for i in range(activeNode.properties|length) %}
+                <input type="text" id="name" name="name" autocomplete="off" value="{{ activeNode.name }}">
+
+                <div class="row no-gutters Indented">
+                    <div class="textFormLeft no-gutters halves">
+                        <h5>Properties</h5>    
+                    </div>
+                    <div class="textFormRight no-gutters halves">
+                        <a href="{{ url_for('addProperty') }}">
+                            <button class="btn btn-primary" type="button">+</button>
+                        </a>
+                    </div>
+                </div>
+
+                <table>
+                    {% for i in range(activeNode.properties|length) %}
                     <tr>
                         <td><input type="text" id="property_{{i}}" name="property_{{i}}" autocomplete="off" value="{{ activeNode.properties[i][0] }}"></td>
-                        <td><input type="textarea" id="property_{{i}}_value" name="property_{{i}}_value" autocomplete="off" value="{{ activeNode.properties[i][1] }}"></td>
-                {% endfor %}
-                        <td><input type="text" id="new_property" name="new_property" autocomplete="off" value="Property"></td>
-                        <td><input type="textarea" id="new_property_value" name="new_property_value" autocomplete="off" value="Value"></td>
+                        <td><textarea id="property_{{i}}_value" name="property_{{i}}_value" autocomplete="off">{{ activeNode.properties[i][1] }}</textarea></td>
                     </tr>
-                <h5>Edges</h5>
-                {% for i in range(activeNode.edges|length) %}
-                    <input type="text" id="edgeType" name="edgeType" autocomplete="off" value="{{ activeNode.edges[i].edgeType }}">
-                    <input type="text" id="edgeNode" name="edgeNode" autocomplete="off" value="{{ activeNode.edges[i].name }}">
-                    <input type="text" id="edgeNodeLabel" name="edgeNodeLabel" autocomplete="off" value="{{ activeNode.edges[i].label }}">
-                    <h7>Edge Properties</h7>
-                    {% for j in range(activeNode.edges.properties|length) %}
-                        <tr>
-                            <td><input type="text" id="edgeProperty_{{j}}" name="property_{{j}}" autocomplete="off" value="{{ activeNode.edges[i].properties[j][0] }}"></td>
-                            <td><input type="textarea" id="edgeProperty_{{j}}_value" name="property_{{j}}_value" autocomplete="off" value="{{ activeNode.edges[i].properties[j][1] }}"></td>
-                        </tr>
                     {% endfor %}
+                </table>
+
+                <div class="row no-gutters Indented">
+                    <div class="textFormLeft no-gutters halves">
+                        <h5>Edges</h5>    
+                    </div>
+                    <div class="textFormRight no-gutters halves">
+                        <a href="{{ url_for('addEdge') }}">
+                            <button class="btn btn-primary" type="button">+</button>
+                        </a>
+                    </div>
+                </div>
+
+                {% for i in range(activeNode.edges|length) %}
+                <input type="text" id="edgeNodeLabel" name="edgeNodeLabel" autocomplete="off" value="{{ activeNode.edges[i].label }}">
+                <input type="text" id="edgeNode" name="edgeNode" autocomplete="off" value="{{ activeNode.edges[i].name }}">
+                <h6>Edge Properties</h6>
+
+                <form action="{{ url_for('addEdgeProperty') }}" method="post">
+                    <input type="text" id="index" name="index" hidden="true" value="{{i}}">
+                    <button class="btn btn-primary" type="submit">+</button>
+                </form>
+
+                <table>
+                    {% for j in range(activeNode.edges[i].properties|length) %}
+                    <tr>
+                        <td><input type="text" id="edgeProperty_{{j}}" name="property_{{j}}" autocomplete="off" value="{{ activeNode.edges[i].properties[j][0] }}"></td>
+                        <td><textarea id="edgeProperty_{{j}}_value" name="property_{{j}}_value" autocomplete="off">{{ activeNode.edges[i].properties[j][1] }}</textarea></td>
+                    </tr>
+                    {% endfor %}
+                </table>
                 {% endfor %}
-                <input type="button" id="submit" name="submit" value="Save" class="bottomRight">
+                
+                <button class="btn btn-primary" type="submit">Save</button>
             </div>
         </div>
     </body>
