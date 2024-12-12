@@ -1,22 +1,25 @@
+version: '3.8'
+
 services:
-#  python:
-#    container_name: python
-#    image: python:latest
-#    build: 
-#      context: ./python
-#    environment:
-#      - PYTHONUNBUFFERED=1
-#    ports:
-#      - 8000:8000
-#    volumes: 
-#      - ./python:/home
-#    depends_on:
-#      - neo4j
-#    networks: 
-#      - net
+  python:
+    container_name: python
+    image: python:latest
+    build: 
+      context: ./python
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - 8000:8000
+    volumes: 
+      - ./python:/python
+    depends_on:
+      - neo4j
+    networks: 
+      - net
+
   neo4j:
     container_name: notes_project_neo4j
-    image: neo4j:latest
+    image: neo4j:5.8
     ports:
       - 7474:7474
       - 7687:7687
@@ -31,16 +34,9 @@ services:
       - ./neo4j_db/logs:/logs
       - ./neo4j_db/import:/var/lib/neo4j/import
       - ./neo4j_db/plugins:/plugins
-#    networks:
-#      - net
+    networks:
+      - net
 
-# networks:
-#   net:
-#     driver: bridge
-# 
-# volumes:
-#   data:
-#   logs:
-#   import:
-#   static:
-#   templates:
+networks:
+  net:
+    driver: bridge

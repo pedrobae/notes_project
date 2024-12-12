@@ -44,5 +44,45 @@ def setNode():
     
     return render_template("index.html", activeNode = data)
 
+
+@app.route("/addProperty", methods=["GET"])
+def addProperty():
+    data = None
+    if request.method == "GET":
+        activeNode.addProperty()
+        data = activeNode.getData()
+        print(data)
+
+    return render_template("index.html", activeNode = data)
+
+@app.route("/addEdge", methods=["GET"])
+def addEdge():
+    data = None
+    if request.method == "GET":
+        activeNode.addEdge()
+        data = activeNode.getData()
+        print(data)
+
+    return render_template("index.html", activeNode = data)
+
+                
+@app.route("/addEdgeProperty", methods=["POST"])
+def addEdgeProperty():
+    data = None
+    if request.method == "POST":
+        i = int(request.form.get("index"))
+        activeNode.edges[i].addProperty()
+        data = activeNode.getData()
+        print(data)
+
+    return render_template("index.html", activeNode = data)
+
+@app.route("/saveNode", methods=["POST"])
+def saveNode():
+    data = activeNode.getData()
+    
+    return render_template("index.html", activeNode = data)
+
+        
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=8000)
