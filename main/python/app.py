@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 from flask import Flask, render_template, redirect, request, jsonify, flash
 
-from helpers import Node
+from helpers import Node, Edge
 
 from connection import Connection
 
@@ -79,10 +79,37 @@ def addEdgeProperty():
 
 @app.route("/saveNode", methods=["POST"])
 def saveNode():
-    data = activeNode.getData()
-    form_data = request.get_json()
-    print("\n\n\nReceived Form Data:", form_data)
-    return render_template("index.html", activeNode = data)
+    try:
+        form_data = request.get_json()
+
+        properties = {"name": form_data["name"]}
+        for property in form_data["properties"]:
+            if property["key"] != "Property":
+                properties[property["key"]] = property["value"]
+
+        activeNode.updateNode(properties)
+
+        edges = []
+        for edge in form_data["edges"]:
+            edge_properties = {}
+            for property in edge["properties"]:
+                if property["key"] != "Property":
+                    edge_properties[property["key"]] = property["value"]
+            edges.append(Edge(edge_properties, edge["name"], edge["label"]))
+        
+        activeNode.updateEdges(edges)
+
+        return jsonify({
+                "success": True,
+                "message": "Node data saved successfully.",
+            }), 200
+    
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": "An error ocurred",
+            "error": str(e)
+        }), 500
 
         
 if __name__ == "__main__":
