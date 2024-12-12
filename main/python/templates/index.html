@@ -59,9 +59,9 @@
                     };
 
                     // Collect edge properties
-                    document.querySelectorAll(`input[id^='property_${index}_']`).forEach((propInput) => {
+                    document.querySelectorAll(`input[id^='edgeProperty_${index}_']`).forEach((propInput) => {
                         const id = propInput.id.split("_")[2]; // Extract edge property index
-                        const propValueInput = document.getElementById(`edgeProperty_${id}_value`);
+                        const propValueInput = document.getElementById(`edgeProperty_${index}_${id}_value`);
                         if (propValueInput) {
                             edge.properties.push({
                                 key: propInput.value,
