@@ -19,7 +19,7 @@ services:
 
   neo4j:
     container_name: notes_project_neo4j
-    image: neo4j:5.8
+    image: neo4j:latest
     ports:
       - 7474:7474
       - 7687:7687
