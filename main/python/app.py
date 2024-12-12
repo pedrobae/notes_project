@@ -39,7 +39,7 @@ def setNode():
     if request.method == "POST":
         name = request.form.get("search")
         form_data = request.get_json()
-        print("\n\n\nReceived Form Data:", form_data)
+        print(name,"\n\n\nReceived Form Data:", form_data)
         activeNode.setNode(name)
         data = activeNode.getData()
         print(data)
