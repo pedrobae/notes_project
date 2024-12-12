@@ -1,5 +1,5 @@
 # Secrets
-/.env
+main/python/.env
 
 # Sistem specific overrides to neo4j docker
 main/docker-compose.override.yml
