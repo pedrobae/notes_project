@@ -38,12 +38,13 @@ def setNode():
     data = None
     if request.method == "POST":
         name = request.form.get("search")
-        
+        form_data = request.get_json()
+        print("\n\n\nReceived Form Data:", form_data)
         activeNode.setNode(name)
         data = activeNode.getData()
         print(data)
     
-    return render_template("index.html", activeNode = data)
+    return render_template("index.html", activeNode = data), jsonify({"message": "Data saved successfully!"})
 
 
 @app.route("/addProperty", methods=["GET"])
