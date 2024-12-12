@@ -8,6 +8,7 @@ class Node():
 
     def setNode(self, name):
         if self.name != "Name":
+            print("\n\n\nSaving Node\n\n\n")
             self.saveNode()
 
         self.name = name
@@ -16,18 +17,21 @@ class Node():
         self.properties = node
         edges = []
         for edge in _edges:
-            edges.append({
-                "properties": edge["properties"],
-                "name": edge["edgeNode"],
-                "label": edge["nodeLabel"][0]
-            })
+            edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
         self.edges = edges
 
     def updateNode(self, properties):
         self.properties = properties
 
-    def updateEdges(self, edges):
-        self.edges = edges
+    def addProperty(self):
+        self.properties["Property"] = "Value"
+
+    def addEdge(self):
+        newEdge = Edge()
+        self.edges.append(newEdge)
+
+    def updateEdges(self, treatedEdges):
+        self.edges = treatedEdges
 
     def mergeNode(self):
         self.con.merge(self.name, self.label, self.properties)
@@ -35,7 +39,8 @@ class Node():
 
     def mergeEdge(self):
         for edge in self.edges:
-            self.con.merge_edge(self.name, self.label, edge["name"], edge["label"], edge["properties"])
+            edgeData = edge.getData()
+            self.con.merge_edge(self.name, self.label, edgeData)
     
     def deleteNode(self):
         self.con.delete(self.name, self.label)
@@ -48,27 +53,36 @@ class Node():
             if property != "name":
                 properties_list.append([property, value])
 
-        edges_list = []
+        edgesList = []
         for edge in self.edges:
-            edge_properties_list = []
-            for property, value in edge["properties"].items():
-                if property != "type":
-                    edge_properties_list.append([property, value])
-            treated_edge = {
-                "edgeType": edge["properties"]["type"],
-                "properties": edge_properties_list,
-                "name": edge["name"],
-                "label": edge["label"]
-            }
-            edges_list.append(treated_edge)
+            edgesList.append(edge.getData())
 
         return {
             "name": self.name,
             "label": self.label,
             "properties": properties_list,
-            "edges": edges_list
+            "edges": edgesList
         }
 
     def saveNode(self):
         self.mergeNode()
         self.mergeEdge()
+
+class Edge():
+    def __init__(self, properties = {"type": "Edge Type"}, name = "Name", label = "Label"):
+        self.name = name
+        self.label = label
+        self.properties = properties
+        
+    def addProperty(self):
+        self.properties["Property"] = "Value"
+
+    def getData(self):
+        properties_list = []
+        for property, value in self.properties.items():
+            properties_list.append([property, value])
+        return {
+            "name": self.name,
+            "label": self.label,
+            "properties": properties_list
+        }

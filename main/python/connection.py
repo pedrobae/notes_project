@@ -92,10 +92,10 @@ class Connection():
     
 #   Create and update an edge and its properties, the nodes can be created with no properties through this method
 #   Use a property type instead of label to discriminate the edges, because it can be modified with this method
-    def merge_edge(self, name_1, nodeType_1, name_2, nodeType_2, propertiesDict):
-        for property, value in propertiesDict.items():
+    def merge_edge(self, name_1, nodeType_1, edgeData):
+        for property in edgeData["properties"]:
             with self._driver.session() as session:
                 result = session.execute_write(
-                    self.__merge_edge_tx, name_1, nodeType_1, name_2, nodeType_2, property, value
+                    self.__merge_edge_tx, name_1, nodeType_1, edgeData["name"], edgeData["label"], property[0], property[1]
                     )
         return result
