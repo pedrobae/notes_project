@@ -99,9 +99,7 @@
     <body>
         <div class="row no-gutters">
             <div class="left side no-gutters">
-                <form action="{{ url_for('setNode') }}" method="post">
-                    <input type="text" id="searchNode" name="search" autocomplete="off">
-                </form>
+                <input type="text" id="searchNode" name="search" autocomplete="off" onsubmit="collectFormData()">
             </div>
 
             <div class="right side no-gutters", name="form">

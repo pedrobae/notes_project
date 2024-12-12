@@ -11,10 +11,10 @@ from connection import Connection
 app = Flask(__name__)
 
 load_dotenv()
-url = "neo4j://localhost:7687"
+uri = "bolt://neo4j:7687"
 user_ = os.environ.get("NEO4J_USER")
 password_ = os.environ.get("NEO4J_PASSWORD")
-con = Connection(url, user_, password_)
+con = Connection(uri, user_, password_)
 
 activeNode = Node(con)
 
