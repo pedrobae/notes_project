@@ -106,12 +106,12 @@
         <div class="row no-gutters">
             <div class="left side no-gutters">
                 <form id="searchForm" action="{{ url_for('setNode') }}" method="post">
-                    <input type="text" id="searchNode" name="search" autocomplete="off" onsubmit="collectFormData()">
+                    <input type="text" id="searchNode" name="search" autocomplete="off">
                     <button type="submit" style="display:none;"></button>
                 </form>
             </div>
 
-            <div class="right side no-gutters", name="form">
+            <div class="right side no-gutters" name="form">
                 <h5>Node</h5>
                 <input type="text" id="label" name="label" autocomplete="off" value="{{ activeNode.label }}">
                 <input type="text" id="name" name="name" autocomplete="off" value="{{ activeNode.name }}">
