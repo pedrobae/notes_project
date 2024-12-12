@@ -38,7 +38,7 @@
                 // Collect properties
                 formData.properties = [];
                 document.querySelectorAll("input[id^='property_']").forEach((input) => {
-                    const id = input.id.split("_")[2]; // Extract property index
+                    const id = input.id.split("_")[1]; // Extract property index
                     const valueInput = document.getElementById(`property_${id}_value`);
                     if (valueInput) {
                         formData.properties.push({
@@ -60,7 +60,7 @@
 
                     // Collect edge properties
                     document.querySelectorAll(`input[id^='property_${index}_']`).forEach((propInput) => {
-                        const id = propInput.id.split("_")[1]; // Extract edge property index
+                        const id = propInput.id.split("_")[2]; // Extract edge property index
                         const propValueInput = document.getElementById(`edgeProperty_${id}_value`);
                         if (propValueInput) {
                             edge.properties.push({
