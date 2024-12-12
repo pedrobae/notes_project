@@ -38,13 +38,11 @@ def setNode():
     data = None
     if request.method == "POST":
         name = request.form.get("search")
-        form_data = request.get_json()
-        print(name,"\n\n\nReceived Form Data:", form_data)
         activeNode.setNode(name)
         data = activeNode.getData()
         print(data)
     
-    return render_template("index.html", activeNode = data), jsonify({"message": "Data saved successfully!"})
+    return render_template("index.html", activeNode = data)
 
 
 @app.route("/addProperty", methods=["GET"])
@@ -82,7 +80,8 @@ def addEdgeProperty():
 @app.route("/saveNode", methods=["POST"])
 def saveNode():
     data = activeNode.getData()
-    
+    form_data = request.get_json()
+    print("\n\n\nReceived Form Data:", form_data)
     return render_template("index.html", activeNode = data)
 
         

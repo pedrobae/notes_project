@@ -25,12 +25,6 @@
                     }
                 });
             });
-
-            document.getElementById('searchForm').onsubmit = function(event) {
-                event.preventDefault();  // Prevent the form from being submitted normally
-                collectFormData();       // Collect form data
-                this.submit();           // Submit the form manually
-            };
         </script>
 
         <script type="text/javascript">
@@ -44,7 +38,7 @@
                 // Collect properties
                 formData.properties = [];
                 document.querySelectorAll("input[id^='property_']").forEach((input) => {
-                    const id = input.id.split("_")[1]; // Extract property index
+                    const id = input.id.split("_")[2]; // Extract property index
                     const valueInput = document.getElementById(`property_${id}_value`);
                     if (valueInput) {
                         formData.properties.push({
@@ -65,7 +59,7 @@
                     };
 
                     // Collect edge properties
-                    document.querySelectorAll(`input[id^='edgeProperty_']`).forEach((propInput) => {
+                    document.querySelectorAll(`input[id^='property_${index}_']`).forEach((propInput) => {
                         const id = propInput.id.split("_")[1]; // Extract edge property index
                         const propValueInput = document.getElementById(`edgeProperty_${id}_value`);
                         if (propValueInput) {
@@ -82,7 +76,7 @@
                 console.log("Collected Form Data:", formData);
 
                 // Sending this data via AJAX to Flask
-                fetch("{{ url_for('setNode') }}", {
+                fetch("{{ url_for('saveNode') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -160,8 +154,8 @@
                 <table>
                     {% for j in range(activeNode.edges[i].properties|length) %}
                     <tr>
-                        <td><input type="text" id="edgeProperty_{{j}}" name="property_{{j}}" autocomplete="off" value="{{ activeNode.edges[i].properties[j][0] }}"></td>
-                        <td><textarea id="edgeProperty_{{j}}_value" name="property_{{j}}_value" autocomplete="off">{{ activeNode.edges[i].properties[j][1] }}</textarea></td>
+                        <td><input type="text" id="edgeProperty_{{i}}_{{j}}" name="property_{{i}}_{{j}}" autocomplete="off" value="{{ activeNode.edges[i].properties[j][0] }}"></td>
+                        <td><textarea id="edgeProperty_{{i}}_{{j}}_value" name="property_{{i}}_{{j}}_value" autocomplete="off">{{ activeNode.edges[i].properties[j][1] }}</textarea></td>
                     </tr>
                     {% endfor %}
                 </table>
