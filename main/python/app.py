@@ -38,6 +38,7 @@ def setNode():
     data = None
     if request.method == "POST":
         name = request.form.get("search")
+        
         activeNode.setNode(name)
         data = activeNode.getData()
         print(data)

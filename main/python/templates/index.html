@@ -26,6 +26,74 @@
                 });
             })
         </script>
+
+        <script type="text/javascript">
+            function collectFormData() {
+                const formData = {};
+
+                // Collect node data
+                formData.label = document.getElementById("label").value;
+                formData.name = document.getElementById("name").value;
+
+                // Collect properties
+                formData.properties = [];
+                document.querySelectorAll("input[id^='property_']").forEach((input) => {
+                    const id = input.id.split("_")[1]; // Extract property index
+                    const valueInput = document.getElementById(`property_${id}_value`);
+                    if (valueInput) {
+                        formData.properties.push({
+                            key: input.value,
+                            value: valueInput.value,
+                        });
+                    }
+                });
+
+                // Collect edges
+                formData.edges = [];
+                document.querySelectorAll("input[name='edgeNodeLabel']").forEach((labelInput, index) => {
+                    const nameInput = document.querySelectorAll("input[name='edgeNode']")[index];
+                    const edge = {
+                        label: labelInput.value,
+                        name: nameInput.value,
+                        properties: [],
+                    };
+
+                    // Collect edge properties
+                    document.querySelectorAll(`input[id^='edgeProperty_']`).forEach((propInput) => {
+                        const id = propInput.id.split("_")[1]; // Extract edge property index
+                        const propValueInput = document.getElementById(`edgeProperty_${id}_value`);
+                        if (propValueInput) {
+                            edge.properties.push({
+                                key: propInput.value,
+                                value: propValueInput.value,
+                            });
+                        }
+                    });
+
+                    formData.edges.push(edge);
+                });
+
+                console.log("Collected Form Data:", formData);
+
+                // Sending this data via AJAX to Flask
+                fetch("{{ url_for('setNode') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log("Response from server:", data);
+                        alert("Data saved successfully!");
+                    })
+                    .catch((error) => {
+                        console.error("Error saving data:", error);
+                        alert("Failed to save data.");
+                    });
+            }
+        </script>
     </head>
 
     <body>
@@ -36,7 +104,7 @@
                 </form>
             </div>
 
-            <div class="right side no-gutters">
+            <div class="right side no-gutters", name="form">
                 <h5>Node</h5>
                 <input type="text" id="label" name="label" autocomplete="off" value="{{ activeNode.label }}">
                 <input type="text" id="name" name="name" autocomplete="off" value="{{ activeNode.name }}">
@@ -92,7 +160,7 @@
                 </table>
                 {% endfor %}
                 
-                <button class="btn btn-primary" type="submit">Save</button>
+                <button class="btn btn-primary" type="submit" onclick="collectFormData()">Save</button>
             </div>
         </div>
     </body>
