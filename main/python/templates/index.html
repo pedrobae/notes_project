@@ -107,58 +107,92 @@
 
             <div class="right side no-gutters" name="form">
                 <h5>Node</h5>
-                <input type="text" id="label" name="label" autocomplete="off" value="{{ activeNode.label }}">
-                <input type="text" id="name" name="name" autocomplete="off" value="{{ activeNode.name }}">
-
-                <div class="row no-gutters Indented">
-                    <div class="textFormLeft no-gutters halves">
-                        <h5>Properties</h5>    
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="label" name="label" 
+                               autocomplete="off" value="{{ activeNode.label }}" placeholder="Enter Node Label">
                     </div>
-                    <div class="textFormRight no-gutters halves">
-                        <a href="{{ url_for('addProperty') }}">
-                            <button class="btn btn-primary" type="button">+</button>
-                        </a>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="name" name="name" 
+                               autocomplete="off" value="{{ activeNode.name }}" placeholder="Enter Node Name">
                     </div>
                 </div>
+            
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Properties</h5>
+                    <a href="{{ url_for('addProperty') }}">
+                        <button class="btn btn-primary btn-sm" type="button">Add Property</button>
+                    </a>
+                </div>
 
-                <table>
-                    {% for i in range(activeNode.properties|length) %}
-                    <tr>
-                        <td><input type="text" id="property_{{i}}" name="property_{{i}}" autocomplete="off" value="{{ activeNode.properties[i][0] }}"></td>
-                        <td><textarea id="property_{{i}}_value" name="property_{{i}}_value" autocomplete="off">{{ activeNode.properties[i][1] }}</textarea></td>
-                    </tr>
-                    {% endfor %}
-                </table>
 
-                <div class="row no-gutters Indented">
-                    <div class="textFormLeft no-gutters halves">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <tbody>
+                            {% for i in range(activeNode.properties|length) %}
+                            <tr>
+                                <td>
+                                    <input type="text" class="form-control" id="property_{{i}}" 
+                                           name="property_{{i}}" autocomplete="off" 
+                                           value="{{ activeNode.properties[i][0] }}" placeholder="Property">
+                                </td>
+                                <td>
+                                    <textarea class="form-control" id="property_{{i}}_value" 
+                                              name="property_{{i}}_value" autocomplete="off" 
+                                              placeholder="Value">{{ activeNode.properties[i][1] }}</textarea>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="row no-gutters">
+                    <div class="d-flex justify-content-between align-items-center">
                         <h5>Edges</h5>    
-                    </div>
-                    <div class="textFormRight no-gutters halves">
                         <a href="{{ url_for('addEdge') }}">
-                            <button class="btn btn-primary" type="button">+</button>
+                            <button class="btn btn-primary ms-3" type="button">Add Edge</button>
                         </a>
                     </div>
                 </div>
 
                 {% for i in range(activeNode.edges|length) %}
-                <input type="text" id="edgeNodeLabel" name="edgeNodeLabel" autocomplete="off" value="{{ activeNode.edges[i].label }}">
-                <input type="text" id="edgeNode" name="edgeNode" autocomplete="off" value="{{ activeNode.edges[i].name }}">
-                <h6>Edge Properties</h6>
+                <div class="card my-3">
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="edgeNodeLabel" name="edgeNodeLabel" 
+                                       placeholder="Edge Label" autocomplete="off" 
+                                       value="{{ activeNode.edges[i].label }}">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="edgeNode" name="edgeNode" 
+                                       placeholder="Edge Name" autocomplete="off" 
+                                       value="{{ activeNode.edges[i].name }}">
+                            </div>
+                        </div>
 
-                <form action="{{ url_for('addEdgeProperty') }}" method="post">
-                    <input type="text" id="index" name="index" hidden="true" value="{{i}}">
-                    <button class="btn btn-primary" type="submit">+</button>
-                </form>
-
-                <table>
-                    {% for j in range(activeNode.edges[i].properties|length) %}
-                    <tr>
-                        <td><input type="text" id="edgeProperty_{{i}}_{{j}}" name="property_{{i}}_{{j}}" autocomplete="off" value="{{ activeNode.edges[i].properties[j][0] }}"></td>
-                        <td><textarea id="edgeProperty_{{i}}_{{j}}_value" name="property_{{i}}_{{j}}_value" autocomplete="off">{{ activeNode.edges[i].properties[j][1] }}</textarea></td>
-                    </tr>
-                    {% endfor %}
-                </table>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <h6 class="mb-0">Edge Properties</h6>
+                            <form action="{{ url_for('addEdgeProperty') }}" method="post" class="mb-0">
+                                <input type="text" id="index" name="index" hidden="true" value="{{i}}">
+                                <button class="btn btn-primary" type="submit">Add Edge Property</button>
+                            </form>
+                        </div>
+                        
+                        <table class="table table-sm mt-3">
+                            {% for j in range(activeNode.edges[i].properties|length) %}
+                            <tr>
+                                <td><input type="text" class="form-control" id="edgeProperty_{{i}}_{{j}}" 
+                                    name="property_{{i}}_{{j}}" autocomplete="off" 
+                                    value="{{ activeNode.edges[i].properties[j][0] }}"></td>
+                                <td><textarea class="form-control" id="edgeProperty_{{i}}_{{j}}_value" 
+                                    name="property_{{i}}_{{j}}_value" autocomplete="off">{{ activeNode.edges[i].properties[j][1] }}</textarea></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
                 {% endfor %}
                 
                 <button class="btn btn-primary" type="submit" onclick="collectFormData()">Save</button>

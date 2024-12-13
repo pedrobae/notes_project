@@ -16,6 +16,7 @@ class Connection():
         """ % {"_nodeType": nodeType, "_name": name, "_property": property, "_value": value}
         print(merge_node)
         result = tx.run(merge_node)
+        print(result)
         return result.single()["name"]
     
     @staticmethod
@@ -88,13 +89,14 @@ class Connection():
             RETURN e
         """ % {"_nodeType_1": nodeType_1, "_name_1": name_1,
                "_nodeType_2": nodeType_2, "_name_2": name_2, "_property": property, "_value": value}
-        print(merge_edge)
+        print("merging edges\n\n", merge_edge)
         result = tx.run(merge_edge)
         return result
     
     @staticmethod
     def __rename_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2):
         rename_edge = """
+
             MERGE (n1:%(_nodeType_1)s {name: "%(_name_1)s"})
             MERGE (n2:%(_nodeType_2)s {name: "%(_name_2)s"})
             MERGE (n1)-[e:Edge]-(n2)
@@ -110,8 +112,9 @@ class Connection():
     def merge(self, name, nodeType, propertiesDict):
         for property, value in propertiesDict.items():
             with self._driver.session() as session:
-                result = session.execute_write(self.__merge_node_tx, name, nodeType, property, value)
-        return result
+                session.execute_write(self.__merge_node_tx, name, nodeType, property, value)
+
+            print("merged")
     
 #   Clears properties for renaming purposes
     def rename(self, name, nodeType, propertiesDict):
