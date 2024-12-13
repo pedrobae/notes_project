@@ -41,6 +41,7 @@ class Connection():
     
     @staticmethod
     def __read_tx(tx, name):
+        edged = True
         read_node = """
             MATCH (n {name: "%(_name)s"})
             RETURN n as node, labels(n) as label
@@ -52,6 +53,7 @@ class Connection():
         print("reading edges\n\n", read_edges)
         data = tx.run(read_edges).data()
         if data == []:
+            edged = False
             print("reading node\n\n", read_node)
             data = tx.run(read_node).data()
 
@@ -59,7 +61,7 @@ class Connection():
         node = data[0]["node"]
         label = data[0]["label"]
         edge = []
-        if len(data) != 1:
+        if edged:
             for dict in data:
                 dict.pop("node")
                 edge.append(dict)
@@ -91,16 +93,15 @@ class Connection():
         return result
     
     @staticmethod
-    def __rename_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2, property, value):
+    def __rename_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2):
         rename_edge = """
             MERGE (n1:%(_nodeType_1)s {name: "%(_name_1)s"})
             MERGE (n2:%(_nodeType_2)s {name: "%(_name_2)s"})
             MERGE (n1)-[e:Edge]-(n2)
             SET e = {}
-            SET e.%(_property)s = "%(_value)s"
             RETURN e
         """ % {"_nodeType_1": nodeType_1, "_name_1": name_1,
-               "_nodeType_2": nodeType_2, "_name_2": name_2, "_property": property, "_value": value}
+               "_nodeType_2": nodeType_2, "_name_2": name_2}
         print(rename_edge)
         result = tx.run(rename_edge)
         return result
@@ -140,27 +141,23 @@ class Connection():
 #   Create and update an edge and its properties, the nodes can be created with no properties through this method
 #   Use a property type instead of label to discriminate the edges, because it can be modified with this method
     def merge_edge(self, name_1, nodeType_1, edgeData):
+        with self._driver.session() as session:
+                result = session.execute_write(
+                    self.__rename_edge_tx, 
+                    str(name_1), 
+                    nodeType_1, 
+                    edgeData["name"], 
+                    edgeData["label"]
+                    )
         for property in edgeData["properties"]:
-            if property[0] == "type":
-                with self._driver.session() as session:
-                    result = session.execute_write(
-                        self.__rename_edge_tx, 
-                        str(name_1), 
-                        nodeType_1, 
-                        edgeData["name"], 
-                        edgeData["label"], 
-                        property[0], 
-                        property[1]
-                        )
-            else:
-                with self._driver.session() as session:
-                    result = session.execute_write(
-                        self.__merge_edge_tx, 
-                        str(name_1), 
-                        nodeType_1, 
-                        edgeData["name"], 
-                        edgeData["label"], 
-                        property[0], 
-                        property[1]
-                        )
+            with self._driver.session() as session:
+                result = session.execute_write(
+                    self.__merge_edge_tx, 
+                    str(name_1), 
+                    nodeType_1, 
+                    edgeData["name"], 
+                    edgeData["label"], 
+                    property[0], 
+                    property[1]
+                    )
         return result
