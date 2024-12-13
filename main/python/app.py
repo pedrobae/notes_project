@@ -107,6 +107,7 @@ def saveNode():
                     if property["key"] != "Property":
                         edge_properties[property["key"]] = property["value"]
                 edges.append(Edge(edge_properties, edge["name"], edge["label"]))
+        print("edges to be updated:\n", edges)
         
         activeNode.updateEdges(edges)
 
