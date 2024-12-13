@@ -49,10 +49,13 @@ class Connection():
             MATCH (n {name: "%(_name)s"})-[e]-(n2)
             RETURN n as node, labels(n) as label, properties(e) AS properties, n2.name AS edgeNode, labels(n2) AS nodeLabel
         """ % {"_name": name}
+        print("reading edges\n\n", read_edges)
         data = tx.run(read_edges).data()
         if data == []:
+            print("reading node\n\n", read_node)
             data = tx.run(read_node).data()
 
+        print('read data:\n', data)
         node = data[0]["node"]
         label = data[0]["label"]
         edge = []
