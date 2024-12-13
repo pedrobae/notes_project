@@ -7,18 +7,20 @@ class Node():
         self.edges = []
 
     def setNode(self, name):
-        if self.name != "Name":
-            print("\n\n\nSaving Node\n\n\n")
-            self.saveNode()
-
         self.name = name
         node, label, _edges = self.con.read(name)
         self.label = label[0]
         self.properties = node
+        print("\n", _edges)
         edges = []
         for edge in _edges:
             edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
+        print("\n", edges)
         self.edges = edges
+
+
+    def updateLabel(self, label):
+        self.label = label 
 
     def updateNode(self, properties):
         self.properties = properties
@@ -34,8 +36,11 @@ class Node():
         self.edges = treatedEdges
 
     def mergeNode(self):
+        newName = self.properties.pop("name")
+        self.con.rename(self.name, self.label, {'name': newName})
+        self.name = newName
         self.con.merge(self.name, self.label, self.properties)
-        self.name = self.properties["name"]
+        
 
     def mergeEdge(self):
         for edge in self.edges:
@@ -65,6 +70,8 @@ class Node():
         }
 
     def saveNode(self):
+        print(self.getData())
+        print("\n\n\nSaving Node\n\n\n")
         self.mergeNode()
         self.mergeEdge()
 

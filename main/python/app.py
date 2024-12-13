@@ -38,10 +38,18 @@ def setNode():
     data = None
     if request.method == "POST":
         name = request.form.get("search")
-        activeNode.setNode(name)
-        data = activeNode.getData()
-        print(data)
-    
+        if name:
+            activeNode.setNode(name)
+            data = activeNode.getData()
+        else:
+            data = {
+                "name":"Name",
+                "label":"Label",
+                "properties": [],
+                "edges": []
+            }
+        
+    print(data)
     return render_template("index.html", activeNode = data)
 
 
@@ -82,6 +90,8 @@ def saveNode():
     try:
         form_data = request.get_json()
 
+        activeNode.updateLabel(form_data["label"])
+
         properties = {"name": form_data["name"]}
         for property in form_data["properties"]:
             if property["key"] != "Property":
@@ -92,12 +102,15 @@ def saveNode():
         edges = []
         for edge in form_data["edges"]:
             edge_properties = {}
-            for property in edge["properties"]:
-                if property["key"] != "Property":
-                    edge_properties[property["key"]] = property["value"]
-            edges.append(Edge(edge_properties, edge["name"], edge["label"]))
+            if edge["name"] != "Name":
+                for property in edge["properties"]:
+                    if property["key"] != "Property":
+                        edge_properties[property["key"]] = property["value"]
+                edges.append(Edge(edge_properties, edge["name"], edge["label"]))
         
         activeNode.updateEdges(edges)
+
+        activeNode.saveNode()
 
         return jsonify({
                 "success": True,
