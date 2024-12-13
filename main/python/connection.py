@@ -41,17 +41,25 @@ class Connection():
     
     @staticmethod
     def __read_tx(tx, name):
-        read = """
+        read_node = """
+            MATCH (n {name: "%(_name)s"})
+            RETURN n as node, labels(n) as label
+        """ % {"_name": name}
+        read_edges = """
             MATCH (n {name: "%(_name)s"})-[e]-(n2)
             RETURN n as node, labels(n) as label, properties(e) AS properties, n2.name AS edgeNode, labels(n2) AS nodeLabel
         """ % {"_name": name}
-        data = tx.run(read).data()
+        data = tx.run(read_edges).data()
+        if data == []:
+            data = tx.run(read_node).data()
+
         node = data[0]["node"]
         label = data[0]["label"]
         edge = []
-        for dict in data:
-            dict.pop("node")
-            edge.append(dict)
+        if len(data) != 1:
+            for dict in data:
+                dict.pop("node")
+                edge.append(dict)
         return node, label, edge
         
 

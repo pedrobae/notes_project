@@ -8,14 +8,16 @@ class Node():
 
     def setNode(self, name):
         self.name = name
+        
         node, label, _edges = self.con.read(name)
         self.label = label[0]
+
         self.properties = node
-        print("\n", _edges)
+        
         edges = []
         for edge in _edges:
             edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
-        print("\n", edges)
+        
         self.edges = edges
 
 
