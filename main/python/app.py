@@ -77,6 +77,7 @@ def addEdgeProperty():
 
     return render_template("index.html", activeNode = data)
 
+
 @app.route("/saveNode", methods=["POST"])
 def saveNode():
     try:
@@ -116,6 +117,23 @@ def saveNode():
             "message": "An error ocurred",
             "error": str(e)
         }), 500
+    
+
+@app.route('/get-graph-data', methods=['GET'])
+def get_graph_data():
+    driver = GraphDatabase.driver("bolt://127.0.0.1:7687", auth=("neo4j", "password"))
+
+    with driver.session() as session:
+        result = session.run("MATCH (n)-[r]->(m) RETURN n, r, m")
+        nodes = []
+        edges = []
+
+        for record in result:
+            nodes.append({"id": record["n"].id, "label": record["n"].labels})
+            nodes.append({"id": record["m"].id, "label": record["m"].labels})
+            edges.append({"source": record["n"].id, "target": record["m"].id, "type": record["r"].type})
+
+    return jsonify({"nodes": nodes, "edges": edges})
 
         
 if __name__ == "__main__":
