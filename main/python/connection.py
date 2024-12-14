@@ -96,7 +96,6 @@ class Connection():
     @staticmethod
     def __rename_edge_tx(tx, name_1, nodeType_1, name_2, nodeType_2):
         rename_edge = """
-
             MERGE (n1:%(_nodeType_1)s {name: "%(_name_1)s"})
             MERGE (n2:%(_nodeType_2)s {name: "%(_name_2)s"})
             MERGE (n1)-[e:Edge]-(n2)
@@ -107,6 +106,22 @@ class Connection():
         print(rename_edge)
         result = tx.run(rename_edge)
         return result
+    
+    @staticmethod
+    def __get_graph_tx(tx, name):
+        get_data = """
+            MATCH (n1 {name: "%(_name)s"})-[e]-(n2)
+            RETURN n1, e, n2
+        """ % {'_name': name}
+        print('getting data\n\n', get_data)
+        result = tx.run(get_data)
+        nodes = []
+        edges = []
+        for record in result:
+            nodes.append({"name": record['n1']['name'], 'label': record['n1'].labels})
+            nodes.append({"name": record['n2']['name'], 'label': record['n2'].labels})
+            edges.append({'source': record['n1']['name'], 'target': record['n2']['name'], 'type': record['e']['type']})
+        return {'nodes': nodes, 'edges': edges}
 
 #   Create and update a node and its properties, the node is chosen by name and nodeType
     def merge(self, name, nodeType, propertiesDict):
@@ -164,3 +179,9 @@ class Connection():
                     property[1]
                     )
         return result
+    
+#   Get node graph data based on name
+    def get_graph(self, name):
+        with self._driver.session() as session:
+            data = session.execute_read(self.__get_graph_tx, name)
+        return data

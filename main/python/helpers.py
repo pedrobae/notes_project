@@ -5,6 +5,7 @@ class Node():
         self.label = "Label"
         self.properties = {}
         self.edges = []
+        self.graph = {'nodes': [], 'edges': []}
 
     def setNode(self, name):
         if name == "":
@@ -12,6 +13,7 @@ class Node():
             self.label = ''
             self.properties = {}
             self.edges = []
+            self.graph = {'nodes': [], 'edges': []}
         else:
             self.name = name
             
@@ -23,6 +25,8 @@ class Node():
             edges = []
             for edge in _edges:
                 edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
+
+            print(self.con.get_graph(name))
             
             self.edges = edges
 
@@ -83,7 +87,7 @@ class Node():
         self.mergeNode()
         print("merging edges")
         self.mergeEdge()
-
+            
 class Edge():
     def __init__(self, properties = {"type": "Edge Type"}, name = "Name", label = "Label"):
         self.name = name
