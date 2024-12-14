@@ -22,13 +22,19 @@ class Node():
 
             self.properties = node
             
-            edges = []
+            self.edges = []
             for edge in _edges:
-                edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
+                self.edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
 
-            self.graph = self.con.get_graph(name)
+            self.graph = {'nodes': [], 'edges': []}
+            graph = self.con.get_graph(name)
+            for node in graph['nodes']:
+                if node not in self.graph['nodes']:
+                    self.graph['nodes'].append(node)
             
-            self.edges = edges
+            for edge in graph['edges']:
+                if edge not in self.graph['edges'] and {'source': edge['target'], 'target': edge['source'], 'type': edge['type']} not in self.graph['edges']:
+                    self.graph['edges'].append(edge)
 
 
     def updateLabel(self, label):
@@ -97,6 +103,22 @@ class Node():
         for edge in expansion['edges']:
             if edge not in self.graph['edges']:
                 self.graph['edges'].append(edge)
+
+    def setNodeExpand(self, name):
+        self.name = name
+            
+        node, label, _edges = self.con.read(name)
+        self.label = label[0]
+
+        self.properties = node
+            
+        edges = []
+        for edge in _edges:
+            edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
+            
+        self.edges = edges
+
+        self.expandGraph(name)
             
 class Edge():
     def __init__(self, properties = {"type": "Edge Type"}, name = "Name", label = "Label"):

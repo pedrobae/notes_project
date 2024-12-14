@@ -123,6 +123,18 @@ def getGraphData():
     print(activeNode.graph)
     return jsonify(activeNode.graph)
 
+@app.route("/expandGraph", methods=["POST"])
+def expandGraph():
+    data = None
+    if request.method == "POST":
+        name = request.form.get('id')
+
+        activeNode.setNodeExpand(name)
+
+        data = activeNode.getData()
+        
+    print(data)
+    return render_template("index.html", activeNode = data)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
