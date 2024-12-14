@@ -1,6 +1,6 @@
-Notes Project
-Video Demo: [<URL HERE>]
-Description:
+###Notes Project
+##Video Demo: [<URL HERE>]
+#Description:
 This is my final project for CS50's Introduction to Computer Science course. The idea behind this project was to create an application that helps with worldbuilding by managing and visualizing characters, locations, groups, and the relationships between them. The application is designed to allow users to create nodes (representing entities such as characters or places) with properties, as well as establish relationships between nodes via edges.
 
 The app is built as a web application for managing and visualizing graph data. It allows users to visually explore the relationships between entities, enabling them to track connections and interact with nodes in real-time. With the power of Cytoscape.js, users can visualize these relationships dynamically. On the backend, Flask serves as the API framework, handling data processing and storage. The graph structure itself is powered by Neo4j, a graph database that efficiently handles nodes and their relationships.
