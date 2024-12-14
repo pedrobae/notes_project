@@ -1,5 +1,5 @@
 # Notes Project
-## Video Demo: [\[<URL HERE>\]](https://www.youtube.com/watch?v=XlSEugu7NHU)
+## Video Demo: [\[<https://www.youtube.com/watch?v=XlSEugu7NHU>\]](https://www.youtube.com/watch?v=XlSEugu7NHU)
 ### Description:
 This is my final project for CS50's Introduction to Computer Science course. The idea behind this project was to create an application that helps with worldbuilding by managing and visualizing characters, locations, groups, and the relationships between them. The application is designed to allow users to create nodes (representing entities such as characters or places) with properties, as well as establish relationships between nodes via edges.
 ![alt text](diagrams/Graph_Diagram.png)
