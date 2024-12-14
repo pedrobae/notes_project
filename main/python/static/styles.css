@@ -18,12 +18,105 @@
     background: #e5cbba;
 }
 
-.bottomRight {
-    position: fixed;
-    right: 0;
-    bottom: 0;
+body {
+    background-color: #f9f5f1; /* Light off-white background */
+    font-family: 'Georgia', serif; /* Soft serif font for paper-like feel */
+    color: #333;
 }
 
-.halves {
-    width: 50%
+.left, .right {
+    padding: 20px;
+}
+
+.form-control {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Courier New', Courier, monospace; /* Typewriter style */
+}
+
+.form-control:focus {
+    box-shadow: 0 0 8px rgba(81, 203, 238, 1);
+    border-color: #4dc1ff;
+}
+
+.card {
+    background-color: #f4f1e7;
+    border: 1px solid #e0d4b7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    font-size: 14px;
+}
+
+.table {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table td, .table th {
+    border: 1px solid #e0d4b7;
+    padding: 10px;
+}
+
+.btn-primary {
+    background-color: #f4a300; /* Paper-like yellowish tone */
+    border-color: #f4a300;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-family: 'Georgia', serif;
+}
+
+.btn-primary:hover {
+    background-color: #ffbb33;
+    border-color: #ffbb33;
+}
+
+.row.g-3.mb-3 input,
+.row.g-3.mb-3 textarea {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h5, h6 {
+    color: #4e4b3e;
+}
+
+h1, h2 {
+    font-family: 'Georgia', serif;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.searchForm {
+    margin-bottom: 20px;
+}
+
+.searchForm input {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.searchForm button {
+    display: none;
+}
+
+#cy {
+    background: #f4f1e7; /* Light parchment color */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
 }

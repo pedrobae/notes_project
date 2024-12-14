@@ -33,7 +33,12 @@ class Node():
                     self.graph['nodes'].append(node)
             
             for edge in graph['edges']:
-                if edge not in self.graph['edges'] and {'source': edge['target'], 'target': edge['source'], 'type': edge['type']} not in self.graph['edges']:
+                reversed = {
+                    'source': edge['target'], 
+                    'target': edge['source'], 
+                    'type': edge['type']
+                }
+                if edge not in self.graph['edges'] and reversed not in self.graph['edges']:
                     self.graph['edges'].append(edge)
 
 
