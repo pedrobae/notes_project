@@ -6,6 +6,7 @@
         <link href="//code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
         <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
         <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.21.0/cytoscape.min.js"></script>
         <link href="/static/styles.css" rel="stylesheet">
         <title>Home</title>
 
@@ -94,15 +95,47 @@
                     });
             }
         </script>
+
+        <script>
+            let cy;
+
+            window.onload = function() {
+                fetch("{{ url_for('getGraphData') }}")
+                    .then(response => response.json())
+                    .then(data => {
+                        const elements = [
+                            ...data.nodes.map(node => ({ data: { id: node.name, label: node.label } })),
+                            ...data.edges.map(edge => ({
+                                data: { source: edge.source, target: edge.target, type: edge.type }
+                            }))
+                        ];
+
+                        cy = cytoscape({
+                            container: document.getElementById('cy'),
+                            elements: elements,
+                            style: [
+                                { selector: 'node', style: { 'content': 'data(id)', 'background-color': '#666' } },
+                                { selector: 'edge', style: { 'content': 'data(type)', 'line-color': '#ccc' } }
+                            ]
+                        });
+                    });
+
+                cy.on('click', 'node', function (evt) {
+                    const node = evt.target;
+                    alert("Clicked on node");
+                });
+            };
+        </script>
     </head>
 
     <body>
         <div class="row no-gutters">
             <div class="left side no-gutters">
                 <form id="searchForm" action="{{ url_for('setNode') }}" method="post">
-                    <input type="text" id="searchNode" name="search" autocomplete="off">
+                    <input type="text" class="form-control" id="searchNode" name="search" autocomplete="off">
                     <button type="submit" style="display:none;"></button>
                 </form>
+                <div id="cy" style="width: 100%; height: 100%;"></div>
             </div>
 
             <div class="right side no-gutters" name="form">

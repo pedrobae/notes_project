@@ -118,6 +118,11 @@ def saveNode():
             "error": str(e)
         }), 500
     
+@app.route("/getGraphData", methods=["GET"])
+def getGraphData():
+    print(activeNode.graph)
+    return jsonify(activeNode.graph)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

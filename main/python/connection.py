@@ -118,8 +118,8 @@ class Connection():
         nodes = []
         edges = []
         for record in result:
-            nodes.append({"name": record['n1']['name'], 'label': record['n1'].labels})
-            nodes.append({"name": record['n2']['name'], 'label': record['n2'].labels})
+            nodes.append({"name": record['n1']['name'], 'label': list(record['n1'].labels)})
+            nodes.append({"name": record['n2']['name'], 'label': list(record['n2'].labels)})
             edges.append({'source': record['n1']['name'], 'target': record['n2']['name'], 'type': record['e']['type']})
         return {'nodes': nodes, 'edges': edges}
 
