@@ -26,7 +26,7 @@ class Node():
             for edge in _edges:
                 edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
 
-            print(self.con.get_graph(name))
+            self.graph = self.con.get_graph(name)
             
             self.edges = edges
 
@@ -87,6 +87,16 @@ class Node():
         self.mergeNode()
         print("merging edges")
         self.mergeEdge()
+
+    def expandGraph(self, name):
+        expansion = self.con.get_graph(name)
+        for node in expansion['nodes']:
+            if node not in self.graph['nodes']:
+                self.graph['nodes'].append(node)
+        
+        for edge in expansion['edges']:
+            if edge not in self.graph['edges']:
+                self.graph['edges'].append(edge)
             
 class Edge():
     def __init__(self, properties = {"type": "Edge Type"}, name = "Name", label = "Label"):
