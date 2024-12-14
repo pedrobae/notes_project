@@ -141,19 +141,22 @@
                                 {
                                     selector: 'edge',
                                     style: {
+                                        'content': 'data(type)',
                                         'line-color': '#ccc', 
                                         'width': 2,
                                         'target-arrow-color': '#ccc',
                                         'target-arrow-shape': 'triangle',
                                         'line-style': 'dashed', 
-                                        'line-dash-pattern': '5 5' 
+                                        'line-dash-pattern': '5 5',
+                                        'font-size': '12px',
+                                        'font-family': 'Courier New, Courier, monospace', 
+                                        'color': '#4e4b3e'
                                     }
                                 },
 
                                 {
                                     selector: 'edge[label]',
                                     style: {
-                                        'content': 'data(type)',
                                         'font-size': '12px',
                                         'font-family': 'Courier New, Courier, monospace', 
                                         'color': '#4e4b3e'
