@@ -87,7 +87,7 @@ def saveNode():
 
         properties = {"name": form_data["name"]}
         for property in form_data["properties"]:
-            if property["key"] != "Property":
+            if property["key"] != "":
                 properties[property["key"]] = property["value"]
 
         activeNode.updateNode(properties)
@@ -95,9 +95,9 @@ def saveNode():
         edges = []
         for edge in form_data["edges"]:
             edge_properties = {}
-            if edge["name"] != "Name":
+            if edge["name"] != "":
                 for property in edge["properties"]:
-                    if property["key"] != "Property":
+                    if property["key"] != "":
                         edge_properties[property["key"]] = property["value"]
                 edges.append(Edge(edge_properties, edge["name"], edge["label"]))
         print("edges to be updated:\n", edges)
@@ -118,10 +118,12 @@ def saveNode():
             "error": str(e)
         }), 500
     
+
 @app.route("/getGraphData", methods=["GET"])
 def getGraphData():
     print(activeNode.graph)
     return jsonify(activeNode.graph)
+
 
 @app.route("/expandGraph", methods=["POST"])
 def expandGraph():
@@ -134,6 +136,43 @@ def expandGraph():
         data = activeNode.getData()
         
     print(data)
+    return render_template("index.html", activeNode = data)
+
+
+@app.route("/deleteProperty", methods=["POST"])
+def deleteProperty():
+    data = None
+    if request.method == "POST":
+        key = request.form.get("propertyKey")
+        activeNode.removeProperty(key)
+        data = activeNode.getData()
+        print(data)
+
+    return render_template("index.html", activeNode = data)
+
+
+@app.route("/deleteEdgeProperty", methods=["POST"])
+def deleteEdgeProperty():
+    data = None
+    if request.method == "POST":
+        i = int(request.form.get("index"))
+        key = request.form.get("edgePropertyKey")
+        activeNode.edges[i].removeProperty(key)
+        data = activeNode.getData()
+        print(data)
+
+    return render_template("index.html", activeNode = data)
+
+
+@app.route("/deleteEdge", methods=["POST"])
+def deleteEdge():
+    data = None
+    if request.method == "POST":
+        i = int(request.form.get("index"))
+        activeNode.removeEdge(i)
+        data = activeNode.getData()
+        print(data)
+
     return render_template("index.html", activeNode = data)
 
 if __name__ == "__main__":

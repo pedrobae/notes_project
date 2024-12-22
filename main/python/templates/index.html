@@ -204,7 +204,7 @@
                     <input type="text" class="form-control" id="searchNode" name="search" autocomplete="off" placeholder="Search Node">
                     <button type="submit" style="display:none;"></button>
                 </form>
-                <div id="cy" style="width: 100%; height: 100%;"></div>
+                <div id="cy" style="width: 100%; height: 93%;"></div>
             </div>
 
             <div class="right side no-gutters" name="form">
@@ -212,11 +212,11 @@
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <input type="text" class="form-control" id="label" name="label" 
-                               autocomplete="off" value="{{ activeNode.label }}" placeholder="Enter Node Label">
+                               autocomplete="off" value="{{ activeNode.label }}" placeholder="Node Label">
                     </div>
                     <div class="col-md-6">
                         <input type="text" class="form-control" id="name" name="name" 
-                               autocomplete="off" value="{{ activeNode.name }}" placeholder="Enter Node Name">
+                               autocomplete="off" value="{{ activeNode.name }}" placeholder="Node Name">
                     </div>
                 </div>
             
@@ -242,6 +242,12 @@
                                     <textarea class="form-control" id="property_{{i}}_value" 
                                               name="property_{{i}}_value" autocomplete="off" 
                                               placeholder="Value">{{ activeNode.properties[i][1] }}</textarea>
+                                </td>
+                                <td>
+                                    <form action="{{ url_for('deleteProperty') }}" method="post" class="mb-0">
+                                        <input type="text" id="propertyKey" name="propertyKey" hidden="true" value="{{ activeNode.properties[i][0] }}">
+                                        <button class="btn btn-primary" type="submit">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -286,13 +292,25 @@
                             {% for j in range(activeNode.edges[i].properties|length) %}
                             <tr>
                                 <td><input type="text" class="form-control" id="edgeProperty_{{i}}_{{j}}" 
-                                    name="property_{{i}}_{{j}}" autocomplete="off" 
+                                    name="property_{{i}}_{{j}}" placeholder="Edge Property" autocomplete="off" 
                                     value="{{ activeNode.edges[i].properties[j][0] }}"></td>
                                 <td><textarea class="form-control" id="edgeProperty_{{i}}_{{j}}_value" 
-                                    name="property_{{i}}_{{j}}_value" autocomplete="off">{{ activeNode.edges[i].properties[j][1] }}</textarea></td>
+                                    name="property_{{i}}_{{j}}_value" placeholder="Edge Property Value" autocomplete="off">{{ activeNode.edges[i].properties[j][1] }}</textarea>
+                                </td>
+                                <td>
+                                    <form action="{{ url_for('deleteEdgeProperty') }}" method="post" class="mb-0">
+                                        <input type="text" id="index" name="index" hidden="true" value="{{i}}">
+                                        <input type="text" id="edgePropertyKey" name="edgePropertyKey" hidden="true" value="{{ activeNode.edges[i].properties[j][0] }}">
+                                        <button class="btn btn-primary" type="submit">Delete</button>
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                         </table>
+                        <form action="{{ url_for('deleteEdge') }}" method="post" class="mb-0">
+                            <input type="text" id="index" name="index" hidden="true" value="{{i}}">
+                            <button class="btn btn-primary" type="submit">Delete</button>
+                        </form>
                     </div>
                 </div>
                 {% endfor %}

@@ -41,6 +41,16 @@ class Connection():
         return result
     
     @staticmethod
+    def __delete_edges_tx(tx, name_1, nodeType_1):
+        delete_edge = """
+            MATCH (n1:%(_nodeType_1)s {name: "%(_name_1)s"})-[e:Edge]-(n)
+            DELETE e
+        """ % {"_nodeType_1": nodeType_1, "_name_1": name_1}
+        print("deleting edges\n\n", delete_edge)
+        result = tx.run(delete_edge)
+        return result
+    
+    @staticmethod
     def __read_tx(tx, name):
         edged = True
         read_node = """
@@ -185,3 +195,13 @@ class Connection():
         with self._driver.session() as session:
             data = session.execute_read(self.__get_graph_tx, name)
         return data
+    
+#   Delete the edges of a node
+    def delete_edges(self, name, nodeType):
+        with self._driver.session() as session:
+            result = session.execute_write(
+                self.__delete_edges_tx, 
+                str(name), 
+                nodeType
+                )
+        return result

@@ -49,11 +49,17 @@ class Node():
         self.properties = properties
 
     def addProperty(self):
-        self.properties["Property"] = "Value"
+        self.properties[""] = ""
+
+    def removeProperty(self, key):
+        self.properties.pop(key)
 
     def addEdge(self):
         newEdge = Edge()
         self.edges.append(newEdge)
+
+    def removeEdge(self, index):
+        self.edges.pop(index)
 
     def updateEdges(self, treatedEdges):
         self.edges = treatedEdges
@@ -65,6 +71,7 @@ class Node():
         print("node merged")
 
     def mergeEdge(self):
+        self.con.delete_edges(self.name, self.label)
         for edge in self.edges:
             edgeData = edge.getData()
             self.con.merge_edge(self.name, self.label, edgeData)
@@ -124,15 +131,19 @@ class Node():
         self.edges = edges
 
         self.expandGraph(name)
+
             
 class Edge():
-    def __init__(self, properties = {"type": "Edge Type"}, name = "Name", label = "Label"):
+    def __init__(self, properties = {"type": ""}, name = "", label = ""):
         self.name = name
         self.label = label
         self.properties = properties
         
     def addProperty(self):
-        self.properties["Property"] = "Value"
+        self.properties[""] = ""
+
+    def removeProperty(self, key):
+        self.properties.pop(key)
 
     def getData(self):
         properties_list = []

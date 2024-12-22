@@ -9,13 +9,11 @@
 .left {
     width: 65%;
     left: 0;
-    background: #d9bda5;
 }
 
 .right {
     width: 35%;
     right: 0;
-    background: #e5cbba;
 }
 
 body {
