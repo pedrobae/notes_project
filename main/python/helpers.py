@@ -26,7 +26,7 @@ class Node():
             for edge in _edges:
                 self.edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
 
-            self.graph = {'nodes': [], 'edges': []}
+            self.graph = {'nodes': [{"name": self.name, 'label': self.label}], 'edges': []}
             graph = self.con.get_graph(name)
             for node in graph['nodes']:
                 if node not in self.graph['nodes']:
@@ -148,8 +148,12 @@ class Edge():
     def getData(self):
         properties_list = []
         for property, value in self.properties.items():
-            properties_list.append([property, value])
+            if property != "type":
+                properties_list.append([property, value])
+            else:
+                type = value
         return {
+            "type": type,
             "name": self.name,
             "label": self.label,
             "properties": properties_list
