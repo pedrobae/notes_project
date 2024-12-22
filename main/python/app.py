@@ -175,5 +175,17 @@ def deleteEdge():
 
     return render_template("index.html", activeNode = data)
 
+
+@app.route("/deleteNode", methods=["GET"])
+def deleteNode():
+    data = None
+    if request.method == "GET":
+        activeNode.deleteNode()
+        activeNode.setNode("")
+        data = activeNode.getData()
+        print(data)
+
+    return render_template("index.html", activeNode = data)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

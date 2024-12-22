@@ -316,6 +316,9 @@
                 {% endfor %}
                 
                 <button class="btn btn-primary" type="submit" onclick="collectFormData()">Save</button>
+                <a href="{{ url_for('deleteNode') }}">
+                    <button class="btn btn-primary ms-3" type="button">Delete</button>
+                </a>
             </div>
         </div>
     </body>
