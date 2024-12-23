@@ -82,6 +82,7 @@ def addEdgeProperty():
 def saveNode():
     try:
         form_data = request.get_json()
+        print(form_data)
 
         activeNode.updateLabel(form_data["label"])
 
