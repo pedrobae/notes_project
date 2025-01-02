@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from flask import Flask, render_template, redirect, request, jsonify, flash
+from flask import Flask, render_template, request, jsonify
 
 from helpers import Node, Edge
 
@@ -30,6 +30,7 @@ def autocomplete():
 @app.route("/", methods=["GET", "POST"])
 def index():
     data = activeNode.getData()
+    print(data)
     return render_template("index.html", activeNode = data)
 
 
