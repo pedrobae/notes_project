@@ -9,6 +9,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.21.0/cytoscape.min.js"></script>
         <link href="/static/styles.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <script src="/static/js/nodeColors.js"></script>
 
         <title>Home</title>
 
@@ -113,7 +114,9 @@
                     .then(response => response.json())
                     .then(data => {
                         const elements = [
-                            ...data.nodes.map(node => ({ data: { id: node.name, label: node.label } })),
+                            ...data.nodes.map(node => ({ 
+                                data: { id: node.name, label: node.label, color: getColorForLabel(node.label) },
+                            })),
                             ...data.edges.map(edge => ({
                                 data: { source: edge.source, target: edge.target, type: edge.type }
                             }))
@@ -124,57 +127,30 @@
                             elements: elements,
                             style: [
                                 {
-                                    selector: 'core',
-                                    style: {
-                                        'background-color': '#f9f5f1', 
-                                        'background-opacity': 0.1
-                                    }
-                                },
-
-                                {
                                     selector: 'node',
                                     style: {
                                         'content': 'data(id)',
-                                        'background-color': '#f4e1a1', 
-                                        'border-radius': '10px', 
+                                        'background-color': 'data(color)', 
                                         'border-width': '2px',
                                         'border-color': '#e2c79d', 
-                                        'box-shadow': '2px 2px 8px rgba(0, 0, 0, 0.2)', 
                                         'font-size': '14px',
                                         'font-family': 'Georgia, serif', 
-                                        'color': '#4e4b3e' 
                                     }
                                 },
-
                                 {
                                     selector: 'edge',
                                     style: {
                                         'content': 'data(type)',
                                         'line-color': '#ccc', 
                                         'width': 2,
-                                        'target-arrow-color': '#ccc',
-                                        'target-arrow-shape': 'triangle',
                                         'line-style': 'dashed', 
                                         'line-dash-pattern': '5 5',
                                         'font-size': '12px',
                                         'font-family': 'Courier New, Courier, monospace', 
                                         'color': '#4e4b3e'
                                     }
-                                },
-
-                                {
-                                    selector: 'edge[label]',
-                                    style: {
-                                        'font-size': '12px',
-                                        'font-family': 'Courier New, Courier, monospace', 
-                                        'color': '#4e4b3e'
-                                    }
                                 }
-                            ],
-                            layout: {
-                                name: 'grid', 
-                                rows: 2
-                            }
+                            ]
                         });
 
                         cy.on('click', 'node', function (evt) {
