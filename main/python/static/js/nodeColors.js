@@ -1,12 +1,9 @@
 const palette = [
     "#fff7cd", // Light yellow
-    "#fff1a8", // Soft yellow
-    "#ffeb99", // Pale gold
-    "#ffe680", // Pastel yellow
-    "#fef9c3", // Cream
-    "#fef3a5", // Warm cream
-    "#fff3c6", // Soft beige
-    "#ffeca2", // Light honey
+    "#ffd95a", // Golden yellow 
+    "#ffc83f", // Rich gold 
+    "#ffb347", // Deep honey 
+    "#d4a017", // Mustard yellow 
 ];
 
 
