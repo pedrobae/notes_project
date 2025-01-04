@@ -64,7 +64,12 @@ window.onload = function() {
                             'color': '#4e4b3e'
                         }
                     }
-                ]
+                ],
+                layout: {
+                    name: 'cose',
+                    animate: true,
+                    animationDuration: 800
+                }
             });
 
             cy.on('click', 'node', function (evt) {
