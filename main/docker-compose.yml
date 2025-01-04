@@ -1,15 +1,15 @@
 services:
   python:
-    container_name: python
+    container_name: app
     image: python:latest
     build: 
-      context: ./python
+      context: ./app
     environment:
       - PYTHONUNBUFFERED=1
     ports:
       - 8000:8000
     volumes: 
-      - ./python:/python
+      - ./app:/app
     depends_on:
       - neo4j
     networks: 
