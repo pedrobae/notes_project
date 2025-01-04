@@ -1,8 +1,8 @@
 class Node():
     def __init__(self, con):
         self.con = con
-        self.name = "Name"
-        self.label = "Label"
+        self.name = ""
+        self.label = ""
         self.properties = {}
         self.edges = []
         self.graph = {'nodes': [], 'edges': []}

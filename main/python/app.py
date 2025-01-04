@@ -24,6 +24,7 @@ def autocomplete():
     writing = request.args.get('q')
     search = con.search_node(writing)
     results = [node["name"] for node in search]
+    print("\n autocomplete suggestions: ", results)
     return jsonify(matching_results = results)
 
 
