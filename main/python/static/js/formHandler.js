@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Populate form with node data
     function populateForm() {
+        console.log("Active Node Data:\n", activeNode);
         document.getElementById("label").value = activeNode.label;
         document.getElementById("name").value = activeNode.name;
 
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
         activeNode.properties.forEach((propTuple, propIndex) => {
             propertiesBody.innerHTML += `
                 <tr>
-                    <td><input type="text" class="form-control" 
+                    <td><input type="text" class="form-control" placeholder="Property"
                                value="${propTuple[0]}" /></td>
                     <td><textarea class="form-control" 
                                   placeholder="Value">${propTuple[1]}</textarea></td>
@@ -95,12 +96,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Collect form data and update active node
     function collectData() {
+        const edges = collectEdgeData();
+
         activeNode.name = document.getElementById("name").value;
         activeNode.label = document.getElementById("label").value;
         activeNode.properties = collectTableData("propertiesTable");
-        edges = collectEdgeData();
         activeNode.edges = edges
-        console.log("Active Node Data:\n", activeNode);
     };
 
     // Add property
