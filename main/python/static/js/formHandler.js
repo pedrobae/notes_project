@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
         activeNode.label = document.getElementById("label").value;
         activeNode.properties = collectTableData("propertiesTable")
         
-        const edgeCards = document.querySelectorAll('')
+        const edgeCards = document.querySelectorAll("input[id^='edgeCard']").forEach((propInput) => {})
         console.log("Active Node Data:\n", activeNode);
     }
 
