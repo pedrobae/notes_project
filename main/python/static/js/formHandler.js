@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         edgesContainer.innerHTML = "";
         activeNode.edges.forEach((edgeData, edgeIndex) => {
             edgesContainer.innerHTML += `
-                <div class="card my-3" id="edge_${edgeIndex}">
+                <div class="card my-3" id="edgeCard(${edgeIndex})">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <input type="text" class="form-control me-3" 
                                value="${edgeData.type}" placeholder="Type" />
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     onclick="addEdgeProperty(${edgeIndex})">Add Edge Property</button>
                         </div>
                         
-                        <table class="table table-bordered table-sm mt-3">
+                        <table class="table table-bordered table-sm mt-3" id="edgePropertiesTable(${edgeIndex})">
                             <tbody id="edgeProperties_${edgeIndex}">
                                 ${edgeData.properties
                                     .map((edgePropTuple, edgePropIndex) => `
@@ -97,6 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function collectData() {
         activeNode.name = document.getElementById("name").value;
         activeNode.label = document.getElementById("label").value;
+        activeNode.properties = collectTableData("propertiesTable")
+        
+        const edgeCards = document.querySelectorAll('')
         console.log("Active Node Data:\n", activeNode);
     }
 
@@ -140,3 +143,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initial population
     populateForm();
 });
+
