@@ -93,9 +93,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Collect form data and update active node
+    function collectData() {
+        activeNode.name = document.getElementById("name").value;
+        activeNode.label = document.getElementById("label").value;
+        console.log("Active Node Data:\n", activeNode);
+    }
+
     // Add property
     addPropertyBtn.addEventListener("click", () => {
         activeNode.properties.push(["", ""]);
+        collectData();
         populateForm();
     });
 
