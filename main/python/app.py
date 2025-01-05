@@ -19,6 +19,12 @@ con = Connection(uri, user_, password_)
 activeNode = Node(con)
 
 
+@app.route('/getData', methods=['GET'])
+def getData():
+    data = activeNode.getData()
+    print(data)
+    return jsonify(data = data)
+
 @app.route("/autocomplete", methods=["GET"])
 def autocomplete():
     writing = request.args.get('q')
@@ -30,54 +36,16 @@ def autocomplete():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    data = activeNode.getData()
-    print(data)
-    return render_template("index.html", activeNode = data)
+    return render_template("index.html")
 
 
 @app.route("/setNode", methods=["POST"])
 def setNode():
-    data = None
     if request.method == "POST":
         name = request.form.get("search")
         activeNode.setNode(name)
-        data = activeNode.getData()
-        
-    print(data)
-    return render_template("index.html", activeNode = data)
 
-
-@app.route("/addProperty", methods=["GET"])
-def addProperty():
-    data = None
-    if request.method == "GET":
-        activeNode.addProperty()
-        data = activeNode.getData()
-        print(data)
-
-    return render_template("index.html", activeNode = data)
-
-@app.route("/addEdge", methods=["GET"])
-def addEdge():
-    data = None
-    if request.method == "GET":
-        activeNode.addEdge()
-        data = activeNode.getData()
-        print(data)
-
-    return render_template("index.html", activeNode = data)
-
-                
-@app.route("/addEdgeProperty", methods=["POST"])
-def addEdgeProperty():
-    data = None
-    if request.method == "POST":
-        i = int(request.form.get("index"))
-        activeNode.edges[i].addProperty()
-        data = activeNode.getData()
-        print(data)
-
-    return render_template("index.html", activeNode = data)
+        return getData()
 
 
 @app.route("/saveNode", methods=["POST"])
@@ -139,43 +107,6 @@ def expandGraph():
         data = activeNode.getData()
         
     print(data)
-    return render_template("index.html", activeNode = data)
-
-
-@app.route("/deleteProperty", methods=["POST"])
-def deleteProperty():
-    data = None
-    if request.method == "POST":
-        key = request.form.get("propertyKey")
-        activeNode.removeProperty(key)
-        data = activeNode.getData()
-        print(data)
-
-    return render_template("index.html", activeNode = data)
-
-
-@app.route("/deleteEdgeProperty", methods=["POST"])
-def deleteEdgeProperty():
-    data = None
-    if request.method == "POST":
-        i = int(request.form.get("index"))
-        key = request.form.get("edgePropertyKey")
-        activeNode.edges[i].removeProperty(key)
-        data = activeNode.getData()
-        print(data)
-
-    return render_template("index.html", activeNode = data)
-
-
-@app.route("/deleteEdge", methods=["POST"])
-def deleteEdge():
-    data = None
-    if request.method == "POST":
-        i = int(request.form.get("index"))
-        activeNode.removeEdge(i)
-        data = activeNode.getData()
-        print(data)
-
     return render_template("index.html", activeNode = data)
 
 

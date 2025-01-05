@@ -48,19 +48,6 @@ class Node():
     def updateNode(self, properties):
         self.properties = properties
 
-    def addProperty(self):
-        self.properties[""] = ""
-
-    def removeProperty(self, key):
-        self.properties.pop(key)
-
-    def addEdge(self):
-        newEdge = Edge()
-        self.edges.append(newEdge)
-
-    def removeEdge(self, index):
-        self.edges.pop(index)
-
     def updateEdges(self, treatedEdges):
         self.edges = treatedEdges
 
@@ -138,12 +125,6 @@ class Edge():
         self.name = name
         self.label = label
         self.properties = properties
-        
-    def addProperty(self):
-        self.properties[""] = ""
-
-    def removeProperty(self, key):
-        self.properties.pop(key)
 
     def getData(self):
         properties_list = []

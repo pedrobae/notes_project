@@ -23,161 +23,53 @@
         <script src="/static/js/graphHandler.js"></script>
         
         <title>Notes Project</title>
-
     </head>
 
     <body>
         <div class="row no-gutters">
             <div class="left side no-gutters">
-                <!-- Search Node -->
+                <!-- Search Node Field -->
                 <form id="searchForm" action="{{ url_for('setNode') }}" method="post" class="searchForm">
-                    <input type="text" class="form-control" id="searchNode" name="search" autocomplete="off" placeholder="Search Node">
+                    <input type="text" class="form-control" id="searchNode" name="search" placeholder="Search Node">
                     <button type="submit" style="display:none;"></button>
                 </form>
                 <!-- Graph -->
                 <div id="cy" style="width: 100%; height: 93%;"></div>
             </div>
 
-            <!-- Form -->
-            <div class="right side no-gutters" name="form">
+            <!-- Node Form -->
+            <div class="right side no-gutters">
                 <h4>Node</h4>
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <input type="text" class="form-control" id="label" name="label" 
-                               autocomplete="off" value="{{ activeNode.label }}" placeholder="Node Label">
+                        <input type="text" class="form-control" id="label" placeholder="Label">
                     </div>
                     <div class="col-md-6">
-                        <input type="text" class="form-control" id="name" name="name" 
-                               autocomplete="off" value="{{ activeNode.name }}" placeholder="Node Name">
+                        <input type="text" class="form-control" id="name" placeholder="Name">
                     </div>
                 </div>
-                
+
                 <!-- Properties Table -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0">Properties</h5>
-                    <a href="{{ url_for('addProperty') }}">
-                        <button class="btn btn-primary ms-3" type="button">Add Property</button>
-                    </a>
+                    <button id="addPropertyBtn" class="btn btn-primary ms-3">Add Property</button>
                 </div>
-
-
                 <div class="table-responsive">
-                    <table class="table table-bordered table-sm">
-                        <colgroup>
-                            <col style="width: 40%;">
-                            <col style="width: 60%;">
-                            <col style="width: auto;">
-                        </colgroup>
-                        <tbody>
-                            {% for i in range(activeNode.properties|length) %}
-                            <tr>
-                                <td>
-                                    <input type="text" class="form-control" id="property_{{i}}" 
-                                           name="property_{{i}}" autocomplete="off" 
-                                           value="{{ activeNode.properties[i][0] }}" placeholder="Property">
-                                </td>
-                                <td>
-                                    <textarea class="form-control" id="property_{{i}}_value" 
-                                              name="property_{{i}}_value" autocomplete="off" 
-                                              placeholder="Value">{{ activeNode.properties[i][1] }}</textarea>
-                                </td>
-                                <td>
-                                    <form action="{{ url_for('deleteProperty') }}" method="post" class="mb-0">
-                                        <input type="text" id="propertyKey" name="propertyKey" hidden="true" value="{{ activeNode.properties[i][0] }}">
-                                        <button class="btn btn-danger btn-sm" type="submit">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
+                    <table class="table table-bordered table-sm" id="propertiesTable">
+                        <tbody id="propertiesBody"></tbody>
                     </table>
                 </div>
-                
-                <!-- Edges Cards -->
-                <div class="row no-gutters">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5>Edges</h5>    
-                        <a href="{{ url_for('addEdge') }}">
-                            <button class="btn btn-primary ms-3" type="button">Add Edge</button>
-                        </a>
-                    </div>
-                </div>
 
-                {% for i in range(activeNode.edges|length) %}
-                <div class="card my-3">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <input type="text" class="form-control me-3" id="edgeType_{{i}}"
-                               placeholder="Type" autocomplete="off" 
-                               value="{{ activeNode.edges[i].type }}">
-                        <form action="{{ url_for('deleteEdge') }}" method="post" class="mb-0">
-                            <input type="text" id="index" name="index" hidden="true" value="{{i}}">
-                            <button class="btn btn-danger btn-sm" type="submit">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </form>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" id="edgeNodeLabel" name="edgeNodeLabel" 
-                                       placeholder="Edge Label" autocomplete="off" 
-                                       value="{{ activeNode.edges[i].label }}">
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" id="edgeNode" name="edgeNode" 
-                                       placeholder="Edge Name" autocomplete="off" 
-                                       value="{{ activeNode.edges[i].name }}">
-                            </div>
-                        </div>
-                
-                        <!-- Edge Properties -->
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <h6 class="mb-0">Edge Properties</h6>
-                            <form action="{{ url_for('addEdgeProperty') }}" method="post" class="mb-0">
-                                <input type="text" id="index" name="index" hidden="true" value="{{i}}">
-                                <button class="btn btn-primary btn-sm" type="submit">Add Edge Property</button>
-                            </form>
-                        </div>
-                
-                        <table class="table table-sm mt-3">
-                            <colgroup>
-                                <col style="width: 40%;">
-                                <col style="width: 60%;">
-                                <col style="width: auto;">
-                            </colgroup>
-                            {% for j in range(activeNode.edges[i].properties|length) %}
-                            <tr>
-                                <td><input type="text" class="form-control" id="edgeProperty_{{i}}_{{j}}" 
-                                    name="property_{{i}}_{{j}}" placeholder="Edge Property" autocomplete="off" 
-                                    value="{{ activeNode.edges[i].properties[j][0] }}"></td>
-                                <td><textarea class="form-control" id="edgeProperty_{{i}}_{{j}}_value" 
-                                    name="property_{{i}}_{{j}}_value" placeholder="Edge Property Value" autocomplete="off">{{ activeNode.edges[i].properties[j][1] }}</textarea>
-                                </td>
-                                <td>
-                                    <form action="{{ url_for('deleteEdgeProperty') }}" method="post" class="mb-0">
-                                        <input type="text" id="index" name="index" hidden="true" value="{{i}}">
-                                        <input type="text" id="edgePropertyKey" name="edgePropertyKey" hidden="true" value="{{ activeNode.edges[i].properties[j][0] }}">
-                                        <button class="btn btn-danger btn-sm" type="submit">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                    </div>
+                <!-- Edges Section -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <h5>Edges</h5>
+                    <button id="addEdgeBtn" class="btn btn-primary">Add Edge</button>
                 </div>
-                {% endfor %}
-                
+                <div id="edgesContainer"></div>
+
                 <div class="d-flex justify-content-end mt-3">
-                    <button class="btn btn-primary" type="submit" onclick="collectFormData()">Save</button>
-                    <a href="{{ url_for('deleteNode') }}">
-                        <button class="btn btn-danger ms-2" type="button">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </a>
+                    <button class="btn btn-primary" id="saveNodeBtn">Save</button>
+                    <button class="btn btn-danger ms-2" id="deleteNodeBtn"><i class="fa fa-trash"></i></button>
                 </div>
             </div>
         </div>
