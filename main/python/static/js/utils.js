@@ -50,3 +50,23 @@ function collectTableData(tableId) {
 
     return data; // Return the collected data
 }
+
+function collectEdgeData() {
+    // Select all edge cards by ID
+    const edgeCards = document.querySelectorAll("[id^='edgeCard']");
+    // Initialize an array for resetting the activeNode.edges the expected edge data format is {label: "", name: "", type: "", properties: [["property", "value"]]}
+    const edges = [];
+    // Iterate through each card
+    edgeCards.forEach((card) => {
+        const cardData = {};
+        const index = card.getAttribute('index');
+        
+        cardData.label = document.getElementById(`edgeLabel(${index})`).value;
+        cardData.name = document.getElementById(`edgeName(${index})`).value;
+        cardData.type = document.getElementById(`edgeType(${index})`).value;
+        cardData.properties = collectTableData(`edgePropertiesTable(${index})`);
+
+        edges.push(cardData);
+    });
+    return edges;
+}
