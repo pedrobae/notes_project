@@ -12,7 +12,8 @@ class Node():
         if name == "":
             self.name = ''
             self.label = ''
-            self.properties = {}
+            self.newName = None
+            self.properties = []
             self.edges = []
             self.graph = {'nodes': [], 'edges': []}
         else:

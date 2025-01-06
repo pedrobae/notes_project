@@ -102,14 +102,24 @@ def expandGraph():
 
 @app.route("/deleteNode", methods=["GET"])
 def deleteNode():
-    data = None
-    if request.method == "GET":
+    try:
         activeNode.deleteNode()
         activeNode.setNode("")
         data = activeNode.getData()
         print(data)
 
-    return render_template("index.html", activeNode = data)
+        return jsonify({
+                "success": True,
+                "message": "Node deleted successfully",
+                'activeNode': data
+            }), 200
+    
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": "An error ocurred",
+            "error": str(e)
+        }), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

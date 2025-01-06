@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const addPropertyBtn = document.getElementById("addPropertyBtn");
     const addEdgeBtn = document.getElementById("addEdgeBtn");
     const saveNodeBtn = document.getElementById('saveNodeBtn');
+    const deleteNodeBtn = document.getElementById('deleteNodeBtn');
 
 
     // Mock data
@@ -125,7 +126,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     alert("Failed to save data.");
                 }
-            })
+            });
+    };
+
+    function deleteNode() {
+        fetch('/deleteNode', {
+            method: 'GET',
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Response from server:', data);
+                if (data.success) {
+                    activeNode.name = '';
+                    activeNode.label = '';
+                    activeNode.properties = [];
+                    activeNode.edges = [];
+                    populateForm();
+                } else {
+                    alert("Failed to delete node.");
+                }
+            });
     };
 
     // Add property
@@ -170,7 +190,11 @@ document.addEventListener("DOMContentLoaded", () => {
         populateForm();
     };
 
+    // Save Form
     saveNodeBtn.addEventListener('click', sendData);
+
+    // Delete Node
+    deleteNodeBtn.addEventListener('click', deleteNode);
 
     // Initial population
     populateForm();
