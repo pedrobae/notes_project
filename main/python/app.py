@@ -54,27 +54,17 @@ def saveNode():
         form_data = request.get_json()
         print(form_data)
 
-        activeNode.updateLabel(form_data["label"])
-
-        properties = {"name": form_data["name"]}
-        for property in form_data["properties"]:
-            if property["key"] != "":
-                properties[property["key"]] = property["value"]
-
-        activeNode.updateNode(properties)
-
         edges = []
-        for edge in form_data["edges"]:
-            edge_properties = {}
-            if edge["name"] != "":
-                for property in edge["properties"]:
-                    if property["key"] != "":
-                        edge_properties[property["key"]] = property["value"]
-                edges.append(Edge(edge_properties, edge["name"], edge["label"]))
-        print("edges to be updated:\n", edges)
-        
-        activeNode.updateEdges(edges)
-
+        for edge in form_data['edges']:
+            edges.append(Edge(edge['properties'], 
+                              edge['name'], 
+                              edge["label"], 
+                              edge['type']))
+            
+        activeNode.updateNode(form_data["label"], 
+                              form_data['name'], 
+                              form_data['properties'], 
+                              edges)
         activeNode.saveNode()
 
         return jsonify({

@@ -3,7 +3,8 @@ class Node():
         self.con = con
         self.name = ""
         self.label = ""
-        self.properties = {}
+        self.newName = None
+        self.properties = []
         self.edges = []
         self.graph = {'nodes': [], 'edges': []}
 
@@ -42,18 +43,16 @@ class Node():
                     self.graph['edges'].append(edge)
 
 
-    def updateLabel(self, label):
-        self.label = label 
-
-    def updateNode(self, properties):
+    def updateNode(self, label, name, properties, edges):
+        self.newName = name
+        self.label = label
         self.properties = properties
+        self.edges = edges
 
-    def updateEdges(self, treatedEdges):
-        self.edges = treatedEdges
 
     def mergeNode(self):
-        self.con.rename(self.name, self.label, {'name': self.properties["name"]})
-        self.name = self.properties["name"]
+        self.con.rename(self.name, self.label, {'name': self.newName})
+        self.name = self.newName
         self.con.merge(self.name, self.label, self.properties)
         print("node merged")
 
@@ -87,9 +86,12 @@ class Node():
 
     def saveNode(self):
         print(self.getData())
+        
         print("\n\n\nSaving Node\n\n\n")
+
         print("merging node")
         self.mergeNode()
+        
         print("merging edges")
         self.mergeEdge()
 
@@ -121,21 +123,16 @@ class Node():
 
             
 class Edge():
-    def __init__(self, properties = {"type": ""}, name = "", label = ""):
+    def __init__(self, properties = [], name = "", label = "", type = ""):
+        self.properties = properties
         self.name = name
         self.label = label
-        self.properties = properties
+        self.type = type
 
     def getData(self):
-        properties_list = []
-        for property, value in self.properties.items():
-            if property != "type":
-                properties_list.append([property, value])
-            else:
-                type = value
         return {
-            "type": type,
+            "type": self.type,
             "name": self.name,
             "label": self.label,
-            "properties": properties_list
+            "properties": self.properties
         }
