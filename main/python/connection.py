@@ -15,21 +15,20 @@ class Connection():
                                                     "_name": name, 
                                                     "_property": property, 
                                                     "_value": value}
-        print(merge_node)
+        print('\nMerging node\n',merge_node)
 
         result = tx.run(merge_node)
         return result.single()["name"]
     
     @staticmethod
-    def __rename_tx(tx, name, nodeType, property, value):
+    def __rename_tx(tx, name, nodeType, newName):
         rename = """MERGE (n:%(_nodeType)s {name: "%(_name)s"})
                     SET n = {}
-                    SET n.%(_property)s = "%(_value)s"
+                    SET n.name = "%(_newName)s"
                     RETURN n.name AS name""" % {"_nodeType": nodeType, 
                                                 "_name": name, 
-                                                "_property": property, 
-                                                "_value": value}
-        print(rename)
+                                                "_newName": newName}
+        print('\nrenaming node\n', rename)
 
         result = tx.run(rename)
         return result.single()["name"]
@@ -47,7 +46,7 @@ class Connection():
         delete_edge = """MATCH (n1:%(_nodeType_1)s {name: "%(_name_1)s"})-[e:Edge]-(n)
                          DELETE e""" % {"_nodeType_1": nodeType_1, 
                                         "_name_1": name_1}
-        print("deleting edges\n\n", delete_edge)
+        print("\ndeleting edges\n", delete_edge)
 
         result = tx.run(delete_edge)
         return result
@@ -64,14 +63,14 @@ class Connection():
                                properties(e) AS properties, 
                                n2.name AS edgeNode, 
                                labels(n2) AS nodeLabel""" % {"_name": name}
-        print("reading edges\n\n", read_edges)
+        print("\nreading edges\n", read_edges)
 
         data = tx.run(read_edges).data()
         if data == []:
             edged = False
-            print("reading node\n\n", read_node)
+            print("reading node\n", read_node)
             data = tx.run(read_node).data()
-        print('read data:\n', data)
+        print('\nread data:\n', data)
         
         node = data[0]["node"]
         label = data[0]["label"]
@@ -88,7 +87,7 @@ class Connection():
         search_node = """MATCH (n)
                          WHERE n.name =~ '(?i).*%(_search)s.*'
                          RETURN labels(n) AS label, n.name AS name""" % {"_search": search}
-        print("searching node\n\n", search_node)
+        print("\nsearching node\n", search_node)
 
         result = tx.run(search_node)
         return result.data()
@@ -105,7 +104,7 @@ class Connection():
                                        "_name_2": name_2, 
                                        "_property": property, 
                                        "_value": value}
-        print("merging edges\n\n", merge_edge)
+        print("\nmerging edges\n", merge_edge)
 
         result = tx.run(merge_edge)
         return result
@@ -121,7 +120,7 @@ class Connection():
                                         "_nodeType_2": nodeType_2, 
                                         "_name_2": name_2, 
                                         "_edgeType": edgeType}
-        print(rename_edge)
+        print('\nrenaming edges\n', rename_edge)
 
         result = tx.run(rename_edge)
         return result
@@ -130,7 +129,7 @@ class Connection():
     def __get_graph_tx(tx, name):
         get_data = """MATCH (n1 {name: "%(_name)s"})-[e]-(n2)
                       RETURN n1, e, n2""" % {'_name': name}
-        print('getting data\n\n', get_data)
+        print('\ngetting data\n', get_data)
 
         result = tx.run(get_data)
         nodes = []
@@ -142,18 +141,17 @@ class Connection():
         return {'nodes': nodes, 'edges': edges}
 
 #   Create and update a node and its properties, the node is chosen by name and nodeType
-    def merge(self, name, nodeType, propertiesDict):
-        for property, value in propertiesDict.items():
+    def merge(self, name, nodeType, propertiesList):
+        for property in propertiesList:
             with self._driver.session() as session:
-                session.execute_write(self.__merge_node_tx, name, nodeType, property, value)
+                session.execute_write(self.__merge_node_tx, name, nodeType, property[0], property[1])
 
-            print("merged")
+            print("Merged")
     
 #   Clears properties for renaming purposes
-    def rename(self, name, nodeType, propertiesDict):
-        for property, value in propertiesDict.items():
-            with self._driver.session() as session:
-                result = session.execute_write(self.__rename_tx, name, nodeType, property, value)
+    def rename(self, name, nodeType, newName):
+        with self._driver.session() as session:
+            result = session.execute_write(self.__rename_tx, name, nodeType, newName)
         return result
 
 #   Delete a node and its edges, the node is chosen by name and nodeType (barely used)
@@ -204,9 +202,8 @@ class Connection():
 #   Delete the edges of a node
     def delete_edges(self, name, nodeType):
         with self._driver.session() as session:
-            result = session.execute_write(
-                self.__delete_edges_tx, 
-                str(name), 
-                nodeType
-                )
+            result = session.execute_write(self.__delete_edges_tx, 
+                                           str(name), 
+                                           nodeType)
+            print('\nDeleted')
         return result

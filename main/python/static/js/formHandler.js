@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const edgesContainer = document.getElementById("edgesContainer");
     const addPropertyBtn = document.getElementById("addPropertyBtn");
     const addEdgeBtn = document.getElementById("addEdgeBtn");
+    const saveNodeBtn = document.getElementById('saveNodeBtn');
+
 
     // Mock data
     const activeNode = {
@@ -104,6 +106,28 @@ document.addEventListener("DOMContentLoaded", () => {
         activeNode.edges = edges
     };
 
+    // Send form data to the /saveData endpoint
+    function sendData() {
+        collectData();
+        // Sending this data via AJAX to Flask
+        fetch("/saveNode", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(activeNode),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Response from server:", data);
+                if (data.success) {
+                    alert("Data saved successfully!");
+                } else {
+                    alert("Failed to save data.");
+                }
+            })
+    };
+
     // Add property
     addPropertyBtn.addEventListener("click", () => {
         collectData();
@@ -146,29 +170,8 @@ document.addEventListener("DOMContentLoaded", () => {
         populateForm();
     };
 
+    saveNodeBtn.addEventListener('click', sendData);
+
     // Initial population
     populateForm();
 });
-
-function sendData() {
-    const formData = collectData()
-    console.log("Collected Form Data:", formData);
-
-    // Sending this data via AJAX to Flask
-    fetch("/saveNode", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("Response from server:", data);
-            alert("Data saved successfully!");
-        })
-        .catch((error) => {
-            console.error("Error saving data:", error);
-            alert("Failed to save data.");
-        });
-}

@@ -51,10 +51,11 @@ class Node():
 
 
     def mergeNode(self):
-        self.con.rename(self.name, self.label, {'name': self.newName})
+        self.con.rename(self.name, self.label, self.newName)
         self.name = self.newName
+        print('Renamed')
+
         self.con.merge(self.name, self.label, self.properties)
-        print("node merged")
 
     def mergeEdge(self):
         self.con.delete_edges(self.name, self.label)
@@ -68,11 +69,6 @@ class Node():
 
     def getData(self):
         # Changing the structure of properties to suit the jinja in index.html
-        properties_list = []
-        for property, value in self.properties.items():
-            if property != "name":
-                properties_list.append([property, value])
-
         edgesList = []
         for edge in self.edges:
             edgesList.append(edge.getData())
@@ -80,20 +76,21 @@ class Node():
         return {
             "name": self.name,
             "label": self.label,
-            "properties": properties_list,
+            "properties": self.properties,
             "edges": edgesList
         }
 
     def saveNode(self):
         print(self.getData())
-        
-        print("\n\n\nSaving Node\n\n\n")
+        print("\n\n\nSaving Node\n\n")
 
-        print("merging node")
+        print("\nMerging node")
         self.mergeNode()
         
-        print("merging edges")
+        print("\nMerging edges")
         self.mergeEdge()
+
+        print('\n\nSaved\n\n')
 
     def expandGraph(self, name):
         expansion = self.con.get_graph(name)
