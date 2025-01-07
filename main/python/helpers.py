@@ -29,7 +29,14 @@ class Node():
             
             self.edges = []
             for edge in _edges:
-                self.edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
+                properties = []
+                type = ''
+                for property, value in edge['properties'].items():
+                    if property != 'type':
+                        properties.append([property, value])
+                    else:
+                        type = value
+                self.edges.append(Edge(properties, edge["edgeNode"], edge["nodeLabel"][0], type))
 
             self.graph = {'nodes': [{"name": self.name, 'label': self.label}], 'edges': []}
             graph = self.con.get_graph(name)
@@ -72,7 +79,6 @@ class Node():
         self.name = None
 
     def getData(self):
-        # Changing the structure of properties to suit the jinja in index.html
         edgesList = []
         for edge in self.edges:
             edgesList.append(edge.getData())
@@ -116,7 +122,14 @@ class Node():
             
         edges = []
         for edge in _edges:
-            edges.append(Edge(edge["properties"], edge["edgeNode"], edge["nodeLabel"][0]))
+                properties = []
+                type = ''
+                for property, value in edge['properties'].items():
+                    if property != 'type':
+                        properties.append([property, value])
+                    else:
+                        type = value
+                self.edges.append(Edge(properties, edge["edgeNode"], edge["nodeLabel"][0], type))
             
         self.edges = edges
 
