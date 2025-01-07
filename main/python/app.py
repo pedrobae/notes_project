@@ -112,22 +112,41 @@ def deleteNode():
 
 @app.route("/getGraphData", methods=["GET"])
 def getGraphData():
-    print(activeNode.graph)
-    return jsonify(activeNode.graph)
+    try:
+        print('\nGraph Data: ', activeNode.graph)
+        return jsonify({
+                "success": True,
+                "message": "Graph data found successfully.",
+                "graphData": activeNode.graph
+            }), 200
+    
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": "An error ocurred",
+            "error": str(e)
+        }), 500
 
 
 @app.route("/expandGraph", methods=["POST"])
 def expandGraph():
-    data = None
-    if request.method == "POST":
-        name = request.form.get('id')
-
-        activeNode.setNodeExpand(name)
-
-        data = activeNode.getData()
-        
-    print(data)
-    return render_template("index.html", activeNode = data)
+    try:
+        clickedNode = request.get_json()
+        print('\nClicked Node', clickedNode)
+        activeNode.setNodeExpand(clickedNode['id'])
+        print('\nGraph Data: ', activeNode.graph)
+        return jsonify({
+                "success": True,
+                "message": "Graph expanded successfully.",
+                "graphData": activeNode.graph
+            }), 200
+    
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": "An error ocurred",
+            "error": str(e)
+        }), 500
 
 
 if __name__ == "__main__":

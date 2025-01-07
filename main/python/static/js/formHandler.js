@@ -96,6 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
             // Add event listener to resize as user types
             textarea.addEventListener('input', () => autoResizeTextArea(textarea));
         });
+
+        getGraphData();
     }
 
     // Collect form data and update active node
@@ -119,15 +121,15 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             body: JSON.stringify(activeNode),
         })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("Response from server:", data);
-                if (data.success) {
-                    alert("Data saved successfully!");
-                } else {
-                    alert("Failed to save data.");
-                }
-            });
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("Response from server:", data);
+            if (data.success) {
+                alert("Data saved successfully!");
+            } else {
+                alert("Failed to save data.");
+            }
+        });
     };
 
     // Delete active Node from the Database
@@ -135,19 +137,19 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch('/deleteNode', {
             method: 'GET',
         })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Response from server:', data);
-                if (data.success) {
-                    activeNode.name = '';
-                    activeNode.label = '';
-                    activeNode.properties = [];
-                    activeNode.edges = [];
-                    populateForm();
-                } else {
-                    alert("Failed to delete node.");
-                }
-            });
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Response from server:', data);
+            if (data.success) {
+                activeNode.name = '';
+                activeNode.label = '';
+                activeNode.properties = [];
+                activeNode.edges = [];
+                populateForm();
+            } else {
+                alert("Failed to delete node.");
+            }
+        });
     };
 
     // Receive active Node from the setNode endpoint
@@ -162,19 +164,19 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             body: JSON.stringify({ search }),
         })
-            .then((response) =>response.json())
-            .then((data) => {
-                console.log('Response from setNode:', data);
-                if (data.success) {
-                    activeNode.edges = data.nodeData.edges
-                    activeNode.name = data.nodeData.name
-                    activeNode.label = data.nodeData.label
-                    activeNode.properties = data.nodeData.properties
-                    populateForm();
-                } else {
-                    alert("Failed to set node.");
-                }
-            });
+        .then((response) =>response.json())
+        .then((data) => {
+            console.log('Response from setNode:', data);
+            if (data.success) {
+                activeNode.edges = data.nodeData.edges
+                activeNode.name = data.nodeData.name
+                activeNode.label = data.nodeData.label
+                activeNode.properties = data.nodeData.properties
+                populateForm();
+            } else {
+                alert("Failed to set node.");
+            }
+        });
     };
 
     // Add property
