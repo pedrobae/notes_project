@@ -118,6 +118,7 @@ function populateGraph() {
                 graphData.nodes = data.graphData.nodes
                 graphData.edges = data.graphData.edges
                 populateGraph();
+                setNode(node.data().id)
             } else {
                 alert("Failed to get Graph Data.");
             }

@@ -20,6 +20,7 @@ class Node():
             self.name = name
             
             node, label, _edges = self.con.read(name)
+            print('\nread data', node, label, _edges)
             self.label = label[0]
 
             self.properties = []
