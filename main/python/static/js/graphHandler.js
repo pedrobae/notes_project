@@ -20,6 +20,25 @@ function getColorForLabel(label) {
     return labelColorMap[label];
 }
 
+function expandGraph(data) {
+    const NodeId = data
+    fetch('/expandGraph', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(NodeId)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            graphData.nodes = data.graphData.nodes
+            graphData.edges = data.graphData.edges
+            populateGraph();
+            setNode(NodeId.id)
+        } else {
+            alert("Failed to get Graph Data.");
+        }
+    })
+}
 
 let cy;
 
@@ -107,21 +126,6 @@ function populateGraph() {
         const node = event.target;
         console.log('Clicked on node:', node.data());
 
-        fetch('/expandGraph', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(node.data())
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                graphData.nodes = data.graphData.nodes
-                graphData.edges = data.graphData.edges
-                populateGraph();
-                setNode(node.data().id)
-            } else {
-                alert("Failed to get Graph Data.");
-            }
-        })
+        expandGraph(node.data())
     });
 };

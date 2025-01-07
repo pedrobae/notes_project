@@ -39,7 +39,7 @@ class Node():
                         type = value
                 self.edges.append(Edge(properties, edge["edgeNode"], edge["nodeLabel"][0], type))
 
-            self.graph = {'nodes': [{"name": self.name, 'label': self.label}], 'edges': []}
+            self.graph = {'nodes': [{"name": self.name, 'label': [self.label]}], 'edges': []}
             graph = self.con.get_graph(name)
             for node in graph['nodes']:
                 if node not in self.graph['nodes']:

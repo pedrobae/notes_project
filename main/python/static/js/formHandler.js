@@ -142,6 +142,10 @@ function sendData() {
         console.log("Response from server:", data);
         if (data.success) {
             alert("Data saved successfully!");
+            
+            const input = {id: activeNode.name};
+            console.log('Saved Node: ', input);
+            expandGraph(input);
         } else {
             alert("Failed to save data.");
         }
