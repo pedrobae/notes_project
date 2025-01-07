@@ -18,13 +18,6 @@ con = Connection(uri, user_, password_)
 
 activeNode = Node(con)
 
-
-@app.route('/getData', methods=['GET'])
-def getData():
-    data = activeNode.getData()
-    print(data)
-    return jsonify(data = data)
-
 @app.route("/autocomplete", methods=["GET"])
 def autocomplete():
     writing = request.args.get('q')
@@ -41,11 +34,26 @@ def index():
 
 @app.route("/setNode", methods=["POST"])
 def setNode():
-    if request.method == "POST":
-        name = request.form.get("search")
-        activeNode.setNode(name)
+    try:
+        search = request.get_json()
+        print('\nSetting Node: ', search['search'])
 
-        return getData()
+        activeNode.setNode(search['search'])
+        data = activeNode.getData()
+        print('Node Data:', data)
+
+        return jsonify({
+                "success": True,
+                "message": "Node data found successfully.",
+                "nodeData": data
+            }), 200
+    
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": "An error ocurred",
+            "error": str(e)
+        }), 500
 
 
 @app.route("/saveNode", methods=["POST"])
@@ -78,26 +86,6 @@ def saveNode():
             "message": "An error ocurred",
             "error": str(e)
         }), 500
-    
-
-@app.route("/getGraphData", methods=["GET"])
-def getGraphData():
-    print(activeNode.graph)
-    return jsonify(activeNode.graph)
-
-
-@app.route("/expandGraph", methods=["POST"])
-def expandGraph():
-    data = None
-    if request.method == "POST":
-        name = request.form.get('id')
-
-        activeNode.setNodeExpand(name)
-
-        data = activeNode.getData()
-        
-    print(data)
-    return render_template("index.html", activeNode = data)
 
 
 @app.route("/deleteNode", methods=["GET"])
@@ -120,6 +108,27 @@ def deleteNode():
             "message": "An error ocurred",
             "error": str(e)
         }), 500
+    
+
+@app.route("/getGraphData", methods=["GET"])
+def getGraphData():
+    print(activeNode.graph)
+    return jsonify(activeNode.graph)
+
+
+@app.route("/expandGraph", methods=["POST"])
+def expandGraph():
+    data = None
+    if request.method == "POST":
+        name = request.form.get('id')
+
+        activeNode.setNodeExpand(name)
+
+        data = activeNode.getData()
+        
+    print(data)
+    return render_template("index.html", activeNode = data)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

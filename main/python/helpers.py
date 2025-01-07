@@ -22,7 +22,10 @@ class Node():
             node, label, _edges = self.con.read(name)
             self.label = label[0]
 
-            self.properties = node
+            self.properties = []
+            for property, value in node.items():
+                if property != 'name':
+                    self.properties.append([property, value])
             
             self.edges = []
             for edge in _edges:

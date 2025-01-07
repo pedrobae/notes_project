@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const addEdgeBtn = document.getElementById("addEdgeBtn");
     const saveNodeBtn = document.getElementById('saveNodeBtn');
     const deleteNodeBtn = document.getElementById('deleteNodeBtn');
-
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchNode');
 
     // Mock data
     const activeNode = {
@@ -129,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     };
 
+    // Delete active Node from the Database
     function deleteNode() {
         fetch('/deleteNode', {
             method: 'GET',
@@ -144,6 +146,33 @@ document.addEventListener("DOMContentLoaded", () => {
                     populateForm();
                 } else {
                     alert("Failed to delete node.");
+                }
+            });
+    };
+
+    // Receive active Node from the setNode endpoint
+    function setNode() {
+        const search = searchInput.value;
+
+        console.log('setting node: ', search);
+        fetch('/setNode', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ search }),
+        })
+            .then((response) =>response.json())
+            .then((data) => {
+                console.log('Response from setNode:', data);
+                if (data.success) {
+                    activeNode.edges = data.nodeData.edges
+                    activeNode.name = data.nodeData.name
+                    activeNode.label = data.nodeData.label
+                    activeNode.properties = data.nodeData.properties
+                    populateForm();
+                } else {
+                    alert("Failed to set node.");
                 }
             });
     };
@@ -195,6 +224,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Delete Node
     deleteNodeBtn.addEventListener('click', deleteNode);
+
+    // Set Node
+    searchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        setNode();
+    });
 
     // Initial population
     populateForm();
