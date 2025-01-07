@@ -78,8 +78,6 @@ function populateForm() {
         // Add event listener to resize as user types
         textarea.addEventListener('input', () => autoResizeTextArea(textarea));
     });
-
-    getGraphData();
 }
 
 // Mock data
@@ -111,6 +109,7 @@ function setNode(name) {
             activeNode.label = data.nodeData.label
             activeNode.properties = data.nodeData.properties
             populateForm();
+            getGraphData();
         } else {
             alert("Failed to set node.");
         }
@@ -163,6 +162,7 @@ function deleteNode() {
             activeNode.properties = [];
             activeNode.edges = [];
             populateForm();
+            getGraphData();
         } else {
             alert("Failed to delete node.");
         }
